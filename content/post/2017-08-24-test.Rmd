@@ -8,3 +8,5 @@ tags: []
 ---
 
 This is my first blog entry. I'm just getting started and I think this will be a good place to test out markdown.
+
+So far, I'm really enjoying this and think it will be very useful to write in this space and in this way. It is much easier and much more simple than writing in HTML which I am enjoying so far.
