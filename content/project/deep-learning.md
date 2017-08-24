@@ -1,22 +1,22 @@
 +++
 # Date this page was created.
-date = "2016-04-27"
+date = "2016-08-24"
 
 # Project title.
-title = "Deep Learning"
+title = "Database Usage"
 
 # Project summary to display on homepage.
-summary = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+summary = "Exploring database usage through Counter Reports and cost per use assessments."
 
 # Optional image to display on homepage (relative to `static/img/` folder).
 image_preview = "bubbles.jpg"
 
 # Tags: can be used for filtering projects.
 # Example: `tags = ["machine-learning", "deep-learning"]`
-tags = ["deep-learning"]
+tags = []
 
 # Optional external URL for project (replaces project detail page).
-external_link = ""
+external_link = "https://github.com/ameyer24/LearningR/tree/master/ER"
 
 # Does the project detail page use math formatting?
 math = false
