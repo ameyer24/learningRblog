@@ -11,7 +11,7 @@ tags: []
 I've started this blog to document and share my thoughts and code as I learn more about data science and how it relates to academic libraries. When writing up my grant proposal, I focused on articulating two important goals: that this would support student learning and that this would allow the Brandel Library to better manage existing data resources. I thought it would be helpful to explore both in greater detail.
 
 # Student Learning and Data Literacy
-
+More about this.
 ## Chicago Data
 ## Census Data
 ## General Data Literacy and Numeracy
