@@ -1,0 +1,37 @@
+---
+title: Electronic Resources Reporting
+author: Andy Meyer
+date: '2017-09-07'
+slug: electronic-resources-reporting
+categories:
+  - Electronic Resources
+tags:
+  - tidyverse
+---
+
+
+
+<p>In thinking about data science and library usage statistics, the first thing I wanted to tackle was Electronic Resources Usages statistics. There are many reasons that this seemed like a bad place to start:</p>
+<ul>
+<li>I don’t love the Counter standards and don’t think they tell a particularly interesting or complete story of our electronic resources usage.</li>
+<li>Counter Reports are a pain to collect and analyze.</li>
+<li>Our online resource financial information is scattered in several places with no complete or comprehensive system.</li>
+</ul>
+<p>But there are also reasons this would be a great place to start:</p>
+<ul>
+<li>Counter Reports (should) come in a standardized format making batch processes a possibility.</li>
+<li>The problem of “too much data” is one that data science and tools like R can handle.</li>
+<li>This would allow data structures, visualizations, and transformations to be shared among the library world; I could show off my good work and steal the best ideas from others.</li>
+<li>Automating this work could remove some of the most hated parts of my job.</li>
+</ul>
+<p>So I started looking at electronic resource usage reports and financial information with the hope of transforming a mess of scattered usage reports and financial information into something that could help us understand our library usage and make more informed decisions about renewals and cancellations.</p>
+<div id="getting-started-with-the-tidyverse" class="section level2">
+<h2>Getting Started with the Tidyverse</h2>
+<p>Like any good project, I learned by trial and error and lots of googling. Through this process I learned about the the set of R packages (and general approach to data science) known as the tidyverse. So that framework helped drive and frame my approach to this project. At it’s current stage, I’ve conceptualized this project in several discrete sections:</p>
+<ol start="0" style="list-style-type: decimal">
+<li>Setup</li>
+<li>Import and Tidying</li>
+<li>Transformations</li>
+<li>Communication</li>
+</ol>
+</div>

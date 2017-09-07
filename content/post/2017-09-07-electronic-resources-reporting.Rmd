@@ -1,0 +1,40 @@
+---
+title: Electronic Resources Reporting
+author: Andy Meyer
+date: '2017-09-07'
+slug: electronic-resources-reporting
+categories:
+  - Electronic Resources
+tags:
+  - tidyverse
+---
+
+In thinking about data science and library usage statistics, the first thing I wanted to tackle was Electronic Resources Usages statistics. There are many reasons that this seemed like a bad place to start:
+
+* I don't love the Counter standards and don't think they tell a particularly interesting or complete story of our electronic resources usage.
+* Counter Reports are a pain to collect and analyze.
+* Our online resource financial information is scattered in several places with no complete or comprehensive system.
+
+But there are also reasons this would be a great place to start:
+
+* Counter Reports (should) come in a standardized format making batch processes a possibility.
+* The problem of "too much data" is one that data science and tools like R can handle.
+* This would allow data structures, visualizations, and transformations to be shared among the library world; I could show off my good work and steal the best ideas from others.
+* Automating this work could remove some of the most hated parts of my job.
+
+So I started looking at electronic resource usage reports and financial information with the hope of transforming a mess of scattered usage reports and financial information into something that could help us understand our library usage and make more informed decisions about renewals and cancellations.
+
+## Getting Started with the Tidyverse
+
+Like any good project, I learned by trial and error and lots of googling. Through this process I learned about the the set of R packages (and general approach to data science) known as the tidyverse. This diagram was in one of the first youtube videos I watched and it made a lot of sense to me and helped me organize my thoughts for this project.
+
+![](http://r4ds.had.co.nz/diagrams/data-science.png)
+
+This framework helped me divide my work into meaningful chunks. At it's current stage, I've conceptualized this project in several discrete sections:
+
+0. Setup - setting up the files and loading the right R packages.
+1. Import and Tidying - somehow get the data from various places into a standardized format within R.
+2. Transformations - do stuff to the data; transform, summarize, average, etc.
+3. Communication - boil down the data and transformations into meaningful reports that can be shared with other people.
+
+I'm planning on writing longer posts about each stage of the project but wanted to provide this overview here.
