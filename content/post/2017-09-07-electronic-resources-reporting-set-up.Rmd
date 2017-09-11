@@ -13,7 +13,7 @@ The setup file in my Electronic Resource report project is still a work in progr
 
 ## Loading Packages
 Here is the R code for this section:
-```{r}
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
 library(tidyverse)
 library(readxl)
 library(lubridate)
