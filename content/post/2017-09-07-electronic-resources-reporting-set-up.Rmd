@@ -1,0 +1,36 @@
+---
+title: Electronic Resources Reporting - Set Up
+author: Andy Meyer
+date: '2017-09-07'
+slug: electronic-resources-reporting-set-up
+categories:
+  - Electronic Resources
+tags:
+  - tidyverse
+---
+
+The setup file in my Electronic Resource report project is still a work in progress but it's the logical place to start this reflection and tour. There are two main sections: a place to load packages that I will need later on as well as a place to define the folders I will use for data import and data export.
+
+## Loading Packages
+Here is the R code for this section:
+```{r}
+library(tidyverse)
+library(readxl)
+library(lubridate)
+library(mosaic)
+library(zoo)
+library(scales)
+library(knitr)
+```
+
+The library function loads libraries that add new functions to base R. There are a lot of packages out there; I'm loading these because they are all required somewhere later in this project. 
+
+## Setting up the Folders
+```{r}
+input.folder <- "C:/DataScience/inputs"
+output.folder <- "C:/DataScience/outputs"
+DB1folder <- "C:/DataScience/inputs/DB1Reports"
+JR1folder <- "C:/DataScience/inputs/JR1Reports"
+```
+
+I'm still wondering if make specific definitions (like this) or setting up a working directory is the better way to specify where R should look for inputs and where it should look for outputs. I've defined these folders manually and that seems to make sense at the time; I might revisit this in the future and use a setwd() and make all of the folder pathways relative.
