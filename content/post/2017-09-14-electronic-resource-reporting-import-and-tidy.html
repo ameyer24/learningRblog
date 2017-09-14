@@ -50,8 +50,8 @@ Messy data is any other arrangement of the data.</p>
 <div id="import-and-tidy-functions" class="section level2">
 <h2>Import and Tidy Functions</h2>
 <p>Now that the project has an understanding of the starting point as well as the end goal - a tidy dataframe - we can start looking at the code that will accomplish this. This project adopted a functional approach by breaking down each step of this process into a relatively simple function that is performed in sequence.</p>
-<div id="transform-data" class="section level3">
-<h3>Transform Data</h3>
+<div id="transform-the-data" class="section level3">
+<h3>Transform the Data</h3>
 <pre class="r"><code># Transforms data from the standard Counter Format to a tidy dataframe.
 tidy.DB1reports &lt;- function(df) {
   df %&gt;%
@@ -70,4 +70,57 @@ tidy.DB1reports &lt;- function(df) {
 <li><code>rename(&quot;User_Activity&quot; = &quot;User Activity&quot;)</code> - Renames this column to avoid the space in the column name. Probably optional but made life easier while working with the data.</li>
 </ol>
 </div>
+<div id="import-the-data" class="section level3">
+<h3>Import the Data</h3>
+<pre class="r"><code># This function imports data from CSV files and makes that data tidy.
+csv.importer &lt;- function(file) {
+  file %&gt;%
+    read_csv(skip=7, col_names = TRUE) %&gt;%
+    tidy.DB1reports()
+}
+# This function imports data from Excel files and makes that data tidy.
+excel.importer &lt;- function(file) {
+  file %&gt;%
+    read_excel(skip=7, col_names = TRUE) %&gt;%
+    tidy.DB1reports()
+}</code></pre>
+<p>This simple functions each import a file by reading the file and then tidying the data using the function defined above. It is somewhat elegent to have two functions that basically do the same thing and I wish this section of code was better. However, this solution is effective, conceptually simple, and easily extendable.</p>
+</div>
+<div id="loading-and-tidying" class="section level3">
+<h3>Loading and Tidying</h3>
+<p>The project now has functions that can tidy a Counter Report as well as load a particular file. We now need to complete the process by applying these functions to all the files in a given folder.</p>
+<pre class="r"><code># These functions load DB1 reports from a given folder.
+load.DB1.csv &lt;- function(path) { 
+  csv.files &lt;- dir(path, pattern = &quot;*.(CSV|csv)&quot;, full.names = TRUE)
+  tables &lt;- lapply(csv.files, csv.importer)
+  do.call(rbind, tables)
+}
+
+load.DB1.excel &lt;- function(path) { 
+  excel.files &lt;- dir(path, pattern = &quot;*.(XL*|xl*)&quot;, full.names = TRUE)
+  tables &lt;- lapply(excel.files, excel.importer)
+  do.call(rbind, tables)
+}</code></pre>
+<p>For example, the <code>load.DB1.csv</code> function accepts a path to a folder as the only parameter. The first step creates a list of files that match the pattern. The second step applies a function (the function <code>csv.importer</code> defined above) to the list (the <code>csv.files</code> list just created). Lastly, this function binds each file together by rows to create a single dataframe of all the data found in the CSV files in a given folder. The <code>load.DB1.excel</code> does the same thing for the excel files.</p>
+<p>These functions are longer than necesary but have been written in a way to make them readable to a novice R user. This function accomplishes the same process but, in my opinion, is much more difficult to read and troubleshoot.</p>
+<pre class="r"><code>load.DB1.csv2 &lt;- function(path) { 
+  do.call(rbind, lapply(dir(path, pattern = &quot;*.(CSV|csv)&quot;, full.names = TRUE), csv.importer))
+}</code></pre>
+<p>Or, alternatively, the same operation could be accomplished without even writing a function!</p>
+<pre class="r"><code>do.call(rbind, lapply(dir(DB1folder, pattern = &quot;*.(CSV|csv)&quot;, full.names = TRUE), csv.importer))</code></pre>
+</div>
+<div id="the-tidy-dataframe" class="section level3">
+<h3>The Tidy Dataframe!</h3>
+<p>After defining the last functions, we can now use these functions to import and tidy all the data from a specified folder.</p>
+<pre class="r"><code>DB1.data.csv &lt;- load.DB1.csv(DB1folder)
+DB1.data.excel &lt;- load.DB1.excel(DB1folder)
+
+DB1 &lt;- unique(rbind(DB1.data.csv,DB1.data.excel))</code></pre>
+<p>The final dataframe, called DB1, binds together the CSV and Excel data into a single dataframe. The <code>unique</code> operation deletes all duplicate data which might be present in the raw Counter Reports that could be run for arbitary date ranges.</p>
+</div>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>This dataframe, DB1, is a tidy dataframe that contains all of the data from every Database 1 Report from a given folder. This dataframe meets the definition of “tidy” defined above because every variable is a column; every observation forms a row; and each type of observational unit forms a table.</p>
+<p>For my library, this process merged together 32 files into a single dataframe that contains nearly 36,000 observations of 6 variables. Data in this format is more difficult for humans to read and use but is the prefered format for additional transformations and visualizations in R.</p>
 </div>

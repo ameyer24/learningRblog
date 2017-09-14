@@ -75,6 +75,7 @@ This function performs operations on a dataframe (df) to make it tidy. Walking t
 5. `rename("User_Activity" = "User Activity")` - Renames this column to avoid the space in the column name. Probably optional but made life easier while working with the data.
 
 ### Import the Data
+
 ```{r}
 # This function imports data from CSV files and makes that data tidy.
 csv.importer <- function(file) {
@@ -89,6 +90,7 @@ excel.importer <- function(file) {
     tidy.DB1reports()
 }
 ```
+
 This simple functions each import a file by reading the file and then tidying the data using the function defined above. It is somewhat elegent to have two functions that basically do the same thing and I wish this section of code was better. However, this solution is effective, conceptually simple, and easily extendable.
 
 ### Loading and Tidying
@@ -117,13 +119,13 @@ load.DB1.csv2 <- function(path) {
 }
 ```
 Or, alternatively, the same operation could be accomplished without even writing a function!
-```{r}
+```{r eval=FALSE}
 do.call(rbind, lapply(dir(DB1folder, pattern = "*.(CSV|csv)", full.names = TRUE), csv.importer))
 ```
 ### The Tidy Dataframe!
 
 After defining the last functions, we can now use these functions to import and tidy all the data from a specified folder.
-```{r}
+```{r echo=TRUE,eval=FALSE}
 DB1.data.csv <- load.DB1.csv(DB1folder)
 DB1.data.excel <- load.DB1.excel(DB1folder)
 
