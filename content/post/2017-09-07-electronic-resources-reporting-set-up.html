@@ -1,7 +1,7 @@
 ---
 title: Electronic Resources Reporting - Set Up
 author: Andy Meyer
-date: '2017-09-07'
+date: '2017-09-14'
 slug: electronic-resources-reporting-set-up
 categories:
   - Electronic Resources
@@ -11,7 +11,7 @@ tags:
 
 
 
-<p>The setup file in my Electronic Resource report project is still a work in progress but it’s the logical place to start this reflection and tour. There are two main sections: a place to load packages that I will need later on as well as a place to define the folders I will use for data import and data export.</p>
+<p>The setup file in my Electronic Resource report project is still a work in progress but it’s the logical place to start this reflection and tour. There are two main sections: a section to load packages that this project will require as well as a place to define the folders this project will use for data import and data export.</p>
 <div id="loading-packages" class="section level2">
 <h2>Loading Packages</h2>
 <p>Here is the R code for this section:</p>
@@ -22,13 +22,44 @@ library(mosaic)
 library(zoo)
 library(scales)
 library(knitr)</code></pre>
-<p>The library function loads libraries that add new functions to base R. There are a lot of packages out there; I’m loading these because they are all required somewhere later in this project.</p>
+<p>The <code>library</code> function loads libraries which in turn add new functions R. There are a lot of packages out there; I’m loading these because they are all required somewhere later in this project. I discovered most of them by googling a specific problem only to find a library that could help solve these problems. I will cover these in greater detail later on but will provide a quick overview here too.</p>
+<div id="tidyverse" class="section level3">
+<h3>tidyverse</h3>
+<p>This is the main library I’m using for this project and the major influence in organizing my thoughts and code. Google provides a ton of useful information here.</p>
+</div>
+<div id="readxl" class="section level3">
+<h3>readxl</h3>
+<p>This library contains the <code>read.excel</code> function that I used to import data from excel docs. It wish I could avoid this - and read from CSV directly - but I have many old Counter Reports in Excel and didn’t want to both reformatting all of those as CSV files.</p>
+</div>
+<div id="lubridate" class="section level3">
+<h3>lubridate</h3>
+<p>This library makes working with dates much easier. I still found wrangling dates to be one of the most frustrating parts of this project but this certainly helped.</p>
+</div>
+<div id="mosaic" class="section level3">
+<h3>mosaic</h3>
+<p>I’m using this library for one function: the <code>derivedFactor</code> function. This function allows me to easily group month-year data into academic terms. Will explore more in the Transform functions where it is used.</p>
+</div>
+<div id="zoo" class="section level3">
+<h3>zoo</h3>
+<p>Again, using this library for one function: the <code>as.yearmon</code> function that helps me deal with the date data in the Counter reports.</p>
+</div>
+<div id="scales" class="section level3">
+<h3>scales</h3>
+<p>This library provides scales that help format financial information that helps make the charts and graphs look nice and professional.</p>
+</div>
+<div id="knitr" class="section level3">
+<h3>knitr</h3>
+<p>This library helps to create the final reports written in rMarkdown.</p>
+</div>
 </div>
 <div id="setting-up-the-folders" class="section level2">
 <h2>Setting up the Folders</h2>
+<p>Here is the R code for this section.</p>
 <pre class="r"><code>input.folder &lt;- &quot;C:/DataScience/inputs&quot;
 output.folder &lt;- &quot;C:/DataScience/outputs&quot;
 DB1folder &lt;- &quot;C:/DataScience/inputs/DB1Reports&quot;
 JR1folder &lt;- &quot;C:/DataScience/inputs/JR1Reports&quot;</code></pre>
-<p>I’m still wondering if make specific definitions (like this) or setting up a working directory is the better way to specify where R should look for inputs and where it should look for outputs. I’ve defined these folders manually and that seems to make sense at the time; I might revisit this in the future and use a setwd() and make all of the folder pathways relative.</p>
+<p>I’m currently making specific definitions about where R should look for information to import. This setup is working well for me and seems like it is the most understandable for another person to adopt this code to import files from their local machine.</p>
+<p>However, I see a lot about the function <code>setwd()</code> which sets a working directory in R and then defining folders relative to that. I think that could also have advantages and might follow some of the best practices within the Rstats world.</p>
+<p>I’ve decided to keep these defintions as is for the time being…but might revisit in the future based on feedback from others. *** That’s everything for now. Will summarize the data import and tidy functions in the next post.</p>
 </div>

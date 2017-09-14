@@ -1,7 +1,7 @@
 ---
 title: Electronic Resources Reporting - Set Up
 author: Andy Meyer
-date: '2017-09-07'
+date: '2017-09-14'
 slug: electronic-resources-reporting-set-up
 categories:
   - Electronic Resources
@@ -9,7 +9,7 @@ tags:
   - tidyverse
 ---
 
-The setup file in my Electronic Resource report project is still a work in progress but it's the logical place to start this reflection and tour. There are two main sections: a place to load packages that I will need later on as well as a place to define the folders I will use for data import and data export.
+The setup file in my Electronic Resource report project is still a work in progress but it's the logical place to start this reflection and tour. There are two main sections: a section to load packages that this project will require as well as a place to define the folders this project will use for data import and data export.
 
 ## Loading Packages
 Here is the R code for this section:
@@ -23,9 +23,39 @@ library(scales)
 library(knitr)
 ```
 
-The library function loads libraries that add new functions to base R. There are a lot of packages out there; I'm loading these because they are all required somewhere later in this project. 
+The `library` function loads libraries which in turn add new functions R. There are a lot of packages out there; I'm loading these because they are all required somewhere later in this project. I discovered most of them by googling a specific problem only to find a library that could help solve these problems. I will cover these in greater detail later on but will provide a quick overview here too.
+
+### tidyverse
+
+This is the main library I'm using for this project and the major influence in organizing my thoughts and code. Google provides a ton of useful information here.
+
+### readxl
+
+This library contains the `read.excel` function that I used to import data from excel docs. It wish I could avoid this - and read from CSV directly - but I have many old Counter Reports in Excel and didn't want to both reformatting all of those as CSV files.
+
+### lubridate
+
+This library makes working with dates much easier. I still found wrangling dates to be one of the most frustrating parts of this project but this certainly helped.
+
+### mosaic
+
+I'm using this library for one function: the `derivedFactor` function. This function allows me to easily group month-year data into academic terms. Will explore more in the Transform functions where it is used.
+
+### zoo
+
+Again, using this library for one function: the `as.yearmon` function that helps me deal with the date data in the Counter reports.
+
+### scales
+
+This library provides scales that help format financial information that helps make the charts and graphs look nice and professional.
+
+### knitr
+
+This library helps to create the final reports written in rMarkdown.
 
 ## Setting up the Folders
+
+Here is the R code for this section.
 ```{r}
 input.folder <- "C:/DataScience/inputs"
 output.folder <- "C:/DataScience/outputs"
@@ -33,4 +63,10 @@ DB1folder <- "C:/DataScience/inputs/DB1Reports"
 JR1folder <- "C:/DataScience/inputs/JR1Reports"
 ```
 
-I'm still wondering if make specific definitions (like this) or setting up a working directory is the better way to specify where R should look for inputs and where it should look for outputs. I've defined these folders manually and that seems to make sense at the time; I might revisit this in the future and use a setwd() and make all of the folder pathways relative.
+I'm currently making specific definitions about where R should look for information to import. This setup is working well for me and seems like it is the most understandable for another person to adopt this code to import files from their local machine.
+
+However, I see a lot about the function `setwd()` which sets a working directory in R and then defining folders relative to that. I think that could also have advantages and might follow some of the best practices within the Rstats world.
+
+I've decided to keep these defintions as is for the time being...but might revisit in the future based on feedback from others.
+***
+That's everything for now. Will summarize the data import and tidy functions in the next post.
