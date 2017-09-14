@@ -13,21 +13,61 @@ slug: electronic-resource-reporting-import-and-tidy
 
 
 
-<p>This was both the most difficult and also one of the most rewarding parts of this project. This steps transforms a jumble of Counter reports from various vendors, in various file formats, that span a wildy inconsistent set of dates into a single dataframe that is nice and tidy.</p>
+<p>This was both the most difficult and also one of the most rewarding parts of this project. These steps transform a jumble of Counter reports from various vendors, in various file formats, that span a wildy inconsistent set of dates into a single dataframe that is nice and tidy.</p>
 <div id="what-are-counter-reports" class="section level2">
 <h2>What are Counter Reports?</h2>
+<p>Counter Reports are standardized usage reports for online resources. These reports are provided by various vendors and follow Counter’s Code of Practice that defines different user actions as well as stipulates the format of the reports.</p>
+<p>For this project, I’m focusing on Database Report 1 which provides an overview of usage at the database level. This project also contains functions to import data from Journal Report 1. These functions could also be extended to import and tidy data from other reports.</p>
+<p>Here is a screenshot of a Database Report 1 (Revision 4) in Excel from the Project Counter website.</p>
 <div class="figure">
 <img src="/img/counterreport1.png" />
 
 </div>
-<div id="what-are-the-variables-in-a-database1-counter-report" class="section level3">
-<h3>What are the variables in a Database1 Counter Report?</h3>
-<p>This was a very helpful and basic question that helped me really grasp the whole point of tidy data. There are</p>
-</div>
+<p>Each though these reports come in a standard format, they are provided by different vendors in a variety of file formats (as Excel documents, comma seperated values, or plain text files) and can be run for arbitary date ranges so even a small library could have a mess of different reports to manage. R provides a way to wrangle and tidy this data making it much more useable.</p>
 </div>
 <div id="what-is-tidy-data" class="section level2">
 <h2>What is Tidy Data?</h2>
+<p>Within the tidyverse, the word “tidy” has a specific definition. From tidyverse vignette:</p>
+<blockquote>
+<p>Tidy data is a standard way of mapping the meaning of a dataset to its structure. A dataset is messy or tidy depending on how rows, columns and tables are matched up with observations, variables and types. In tidy data:<br />
+1. Each variable forms a column.<br />
+2. Each observation forms a row.<br />
+3. Each type of observational unit forms a table.<br />
+Messy data is any other arrangement of the data.</p>
+</blockquote>
+<p>So Counter Reports are, by this definition, messy. The tidying process starts by identifying the variables, which are:</p>
+<ul>
+<li>Database</li>
+<li>Publisher</li>
+<li>Platform</li>
+<li>User Activity</li>
+<li>Date (expressed as Month-Year)</li>
+</ul>
+<p>The usage number is the observation for a given set of variables.</p>
+<p>This same information can be conveyed visually; variables are circled in red and observations are noted in the green box. <img src="/img/counterreport2.png" /></p>
+<p>This was a very helpful and basic question that helped me really grasp the whole point of tidy data. There are</p>
 </div>
 <div id="import-and-tidy-functions" class="section level2">
 <h2>Import and Tidy Functions</h2>
+<p>Now that the project has an understanding of the starting point as well as the end goal - a tidy dataframe - we can start looking at the code that will accomplish this. This project adopted a functional approach by breaking down each step of this process into a relatively simple function that is performed in sequence.</p>
+<div id="transform-data" class="section level3">
+<h3>Transform Data</h3>
+<pre class="r"><code># Transforms data from the standard Counter Format to a tidy dataframe.
+tidy.DB1reports &lt;- function(df) {
+  df %&gt;%
+    select(-c(5)) %&gt;%
+    gather(Date, Usage, -c(1:4)) %&gt;%
+    mutate(Date = as.yearmon(Date, &quot;%b-%Y&quot;)) %&gt;%
+    mutate(Usage = as.numeric(Usage)) %&gt;%
+    rename(&quot;User_Activity&quot; = &quot;User Activity&quot;)
+}</code></pre>
+<p>This function performs operations on a dataframe (df) to make it tidy. Walking through line by line:</p>
+<ol style="list-style-type: decimal">
+<li><code>select(-c(5))</code> - Deletes the 5th column. The Reporting Period Total is not useful for this operation and is therefore excluded.</li>
+<li><code>gather(Date, Usage, -c(1:4))</code> - The gather function is the primary way of moving data from a “wide” format into a tidy “long” format. This step moves data from multiple columns (everything except for columns 1 to 4) and creates a new variable called “Date” that is defined as the key and a new column called “Usage” that is the value.</li>
+<li><code>mutate(Date = as.yearmon(Date, &quot;%b-%Y&quot;))</code> This mutates the Date column from a character variable to a YearMon data type. This is important for date operations later on.</li>
+<li><code>mutate(Usage = as.numeric(Usage))</code> - Changes the Usage values from character strings to numbers. Important for later transformations.</li>
+<li><code>rename(&quot;User_Activity&quot; = &quot;User Activity&quot;)</code> - Renames this column to avoid the space in the column name. Probably optional but made life easier while working with the data.</li>
+</ol>
+</div>
 </div>

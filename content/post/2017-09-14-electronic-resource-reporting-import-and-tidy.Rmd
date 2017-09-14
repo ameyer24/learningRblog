@@ -11,14 +11,129 @@ tags:
 slug: electronic-resource-reporting-import-and-tidy
 ---
 
-This was both the most difficult and also one of the most rewarding parts of this project. This steps transforms a jumble of Counter reports from various vendors, in various file formats, that span a wildy inconsistent set of dates into a single dataframe that is nice and tidy.
+This was both the most difficult and also one of the most rewarding parts of this project. These steps transform a jumble of Counter reports from various vendors, in various file formats, that span a wildy inconsistent set of dates into a single dataframe that is nice and tidy.
 
 ## What are Counter Reports?
+
+Counter Reports are standardized usage reports for online resources. These reports are provided by various vendors and follow Counter's Code of Practice that defines different user actions as well as stipulates the format of the reports.
+
+For this project, I'm focusing on Database Report 1 which provides an overview of usage at the database level. This project also contains functions to import data from Journal Report 1. These functions could also be extended to import and tidy data from other reports.
+
+Here is a screenshot of a Database Report 1 (Revision 4) in Excel from the Project Counter website.
+
 ![](/img/counterreport1.png)
 
-### What are the variables in a Database1 Counter Report?
-This was a very helpful and basic question that helped me really grasp the whole point of tidy data. There are 
+Each though these reports come in a standard format, they are provided by different vendors in a variety of file formats (as Excel documents, comma seperated values, or plain text files) and can be run for arbitary date ranges so even a small library could have a mess of different reports to manage. R provides a way to wrangle and tidy this data making it much more useable.
 
 ## What is Tidy Data?
 
+Within the tidyverse, the word "tidy" has a specific definition. From tidyverse vignette:
+
+>Tidy data is a standard way of mapping the meaning of a dataset to its structure. A dataset is messy or tidy depending on how rows, columns and tables are matched up with observations, variables and types. In tidy data:  
+1. Each variable forms a column.  
+2. Each observation forms a row.  
+3. Each type of observational unit forms a table.  
+Messy data is any other arrangement of the data.
+
+So Counter Reports are, by this definition, messy. The tidying process starts by identifying the variables, which are:
+
+* Database
+* Publisher
+* Platform
+* User Activity
+* Date (expressed as Month-Year)
+
+The usage number is the observation for a given set of variables.
+
+This same information can be conveyed visually; variables are circled in red and observations are noted in the green box.
+![](/img/counterreport2.png)
+
+This was a very helpful and basic question that helped me really grasp the whole point of tidy data. There are 
+
 ## Import and Tidy Functions
+
+Now that the project has an understanding of the starting point as well as the end goal - a tidy dataframe - we can start looking at the code that will accomplish this. This project adopted a functional approach by breaking down each step of this process into a relatively simple function that is performed in sequence.
+
+### Transform the Data
+```{r}
+# Transforms data from the standard Counter Format to a tidy dataframe.
+tidy.DB1reports <- function(df) {
+  df %>%
+    select(-c(5)) %>%
+    gather(Date, Usage, -c(1:4)) %>%
+    mutate(Date = as.yearmon(Date, "%b-%Y")) %>%
+    mutate(Usage = as.numeric(Usage)) %>%
+    rename("User_Activity" = "User Activity")
+}
+```
+This function performs operations on a dataframe (df) to make it tidy. Walking through line by line:
+
+1. `select(-c(5))` - Deletes the 5th column. The Reporting Period Total is not useful for this operation and is therefore excluded.
+2. `gather(Date, Usage, -c(1:4))` - The gather function is the primary way of moving data from a "wide" format into a tidy "long" format. This step moves data from multiple columns (everything except for columns 1 to 4) and creates a new variable called "Date" that is defined as the key and a new column called "Usage" that is the value.
+3. `mutate(Date = as.yearmon(Date, "%b-%Y"))` This mutates the Date column from a character variable to a YearMon data type. This is important for date operations later on.
+4. `mutate(Usage = as.numeric(Usage))` - Changes the Usage values from character strings to numbers. Important for later transformations.
+5. `rename("User_Activity" = "User Activity")` - Renames this column to avoid the space in the column name. Probably optional but made life easier while working with the data.
+
+### Import the Data
+```{r}
+# This function imports data from CSV files and makes that data tidy.
+csv.importer <- function(file) {
+  file %>%
+    read_csv(skip=7, col_names = TRUE) %>%
+    tidy.DB1reports()
+}
+# This function imports data from Excel files and makes that data tidy.
+excel.importer <- function(file) {
+  file %>%
+    read_excel(skip=7, col_names = TRUE) %>%
+    tidy.DB1reports()
+}
+```
+This simple functions each import a file by reading the file and then tidying the data using the function defined above. It is somewhat elegent to have two functions that basically do the same thing and I wish this section of code was better. However, this solution is effective, conceptually simple, and easily extendable.
+
+### Loading and Tidying
+The project now has functions that can tidy a Counter Report as well as load a particular file. We now need to complete the process by applying these functions to all the files in a given folder.
+
+```{r}
+# These functions load DB1 reports from a given folder.
+load.DB1.csv <- function(path) { 
+  csv.files <- dir(path, pattern = "*.(CSV|csv)", full.names = TRUE)
+  tables <- lapply(csv.files, csv.importer)
+  do.call(rbind, tables)
+}
+
+load.DB1.excel <- function(path) { 
+  excel.files <- dir(path, pattern = "*.(XL*|xl*)", full.names = TRUE)
+  tables <- lapply(excel.files, excel.importer)
+  do.call(rbind, tables)
+}
+```
+For example, the `load.DB1.csv` function accepts a path to a folder as the only parameter. The first step creates a list of files that match the pattern. The second step applies a function (the function `csv.importer` defined above) to the list (the `csv.files` list just created). Lastly, this function binds each file together by rows to create a single dataframe of all the data found in the CSV files in a given folder. The `load.DB1.excel` does the same thing for the excel files.
+
+These functions are longer than necesary but have been written in a way to make them readable to a novice R user. This function accomplishes the same process but, in my opinion, is much more difficult to read and troubleshoot.
+```{r}
+load.DB1.csv2 <- function(path) { 
+  do.call(rbind, lapply(dir(path, pattern = "*.(CSV|csv)", full.names = TRUE), csv.importer))
+}
+```
+Or, alternatively, the same operation could be accomplished without even writing a function!
+```{r}
+do.call(rbind, lapply(dir(DB1folder, pattern = "*.(CSV|csv)", full.names = TRUE), csv.importer))
+```
+### The Tidy Dataframe!
+
+After defining the last functions, we can now use these functions to import and tidy all the data from a specified folder.
+```{r}
+DB1.data.csv <- load.DB1.csv(DB1folder)
+DB1.data.excel <- load.DB1.excel(DB1folder)
+
+DB1 <- unique(rbind(DB1.data.csv,DB1.data.excel))
+```
+The final dataframe, called DB1, binds together the CSV and Excel data into a single dataframe. The `unique` operation deletes all duplicate data which might be present in the raw Counter Reports that could be run for arbitary date ranges.
+
+## Conclusion
+
+This dataframe, DB1, is a tidy dataframe that contains all of the data from every Database 1 Report from a given folder. This dataframe meets the definition of "tidy" defined above because every variable is a column; every observation forms a row; and each type of observational unit forms a table.
+
+For my library, this process merged together 32 files into a single dataframe that contains nearly 36,000 observations of 6 variables. Data in this format is more difficult for humans to read and use but is the prefered format for additional transformations and visualizations in R.
+
