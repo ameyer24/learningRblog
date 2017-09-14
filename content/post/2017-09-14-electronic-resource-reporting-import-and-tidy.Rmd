@@ -1,0 +1,24 @@
+---
+title: Electronic Resource Reporting - Import and Tidy
+author: Andy Meyer
+date: '2017-09-14'
+categories:
+  - Electronic Resources
+tags:
+  - tidyverse
+  - data import
+  - tidy
+slug: electronic-resource-reporting-import-and-tidy
+---
+
+This was both the most difficult and also one of the most rewarding parts of this project. This steps transforms a jumble of Counter reports from various vendors, in various file formats, that span a wildy inconsistent set of dates into a single dataframe that is nice and tidy.
+
+## What are Counter Reports?
+![](`\img\counterreport1.png)
+
+### What are the variables in a Database1 Counter Report?
+This was a very helpful and basic question that helped me really grasp the whole point of tidy data. There are 
+
+## What is Tidy Data?
+
+## Import and Tidy Functions
