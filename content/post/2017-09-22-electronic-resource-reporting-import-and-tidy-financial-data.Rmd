@@ -19,7 +19,7 @@ Unlike standard counter reports - which have clear definitions and come in a sta
 ## Creating the Template
 
 To make the data import process a little easier and to make the event matching process easier, I used data from database usage reports (stored as dataframe `DB1` in R) to create a template to start the process.
-```{r}
+```{r eval=FALSE}
 db.price.template <- DB1 %>%
   mutate(Year = year(Date)) %>%
   distinct(Database, Publisher, Platform, Year) %>%
@@ -48,7 +48,7 @@ I then manually entered data into this CSV file. It was laborous.
 
 Once I entered the relevant data, R imports that file into a new dataframe. This dataframe is still "wide" and not "tidy" so the script with gather the cost information to return the dataframe to a tidy format.
 
-```{r}
+```{r eval=FALSE}
 db.prices.raw <- read_csv(paste(input.folder, "database.price.csv",sep="/"),col_names = TRUE)
 
 

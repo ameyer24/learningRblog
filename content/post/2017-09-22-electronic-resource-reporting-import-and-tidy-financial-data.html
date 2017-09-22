@@ -2,16 +2,63 @@
 title: Electronic Resource Reporting - Import and Tidy Financial Data
 author: Andy Meyer
 date: '2017-09-22'
-slug: electronic-resource-reporting-import-and-tidy-financial-data
 categories:
   - Electronic Resources
 tags:
   - data import
+  - financial data
   - tidy
   - tidyverse
-  - financial data
+slug: electronic-resource-reporting-import-and-tidy-financial-data
 ---
 
 
 
+<p>Early in the electronic resource reporting process I realized that an essential component to this analysis would be the financial information. So I then had to think about 1) what financial information would be useful and 2) how to import and use that data in R.</p>
+<p>Unlike standard counter reports - which have clear definitions and come in a standard format - the financial information for the electronic resource spending is not standardized and does not exist in one place. Therefore the data import really started as a data gathering process and, in some cases, as a data creation process. This was messy and the part of the project that feels the most “home-grown” and hacked together.</p>
+<div id="creating-the-template" class="section level2">
+<h2>Creating the Template</h2>
+<p>To make the data import process a little easier and to make the event matching process easier, I used data from database usage reports (stored as dataframe <code>DB1</code> in R) to create a template to start the process.</p>
+<pre class="r"><code>db.price.template &lt;- DB1 %&gt;%
+  mutate(Year = year(Date)) %&gt;%
+  distinct(Database, Publisher, Platform, Year) %&gt;%
+  mutate(Price =&quot;&quot;,
+         Notes=&quot;&quot;,
+         Fund=&quot;&quot;,
+         Order_Agent=&quot;&quot;,
+         Order_Term=&quot;Fiscal Year&quot;) %&gt;%
+  spread(Year,Price) %&gt;%
+  write_csv(paste(output.folder, &quot;database.price.template.csv&quot;,sep=&quot;/&quot;))</code></pre>
+<p>This chunk of code takes the tidy DB1 dataframe and reduces it to unique entries for every Database, Publisher, Platform, and Year. It then uses the mutate function to create empty columns for the following bits of data:</p>
+<ul>
+<li>Price</li>
+<li>Notes</li>
+<li>Fund</li>
+<li>Order_Agent</li>
+<li>Order_Term - for this variable the program sets the default to “Fiscal Year” because the majority of our electronic resources are renewed on the fiscal year.</li>
+</ul>
+<p>Finally, it uses the spread function to turn the data from a long and tidy dataframe to wide dataframe that is easier for humans to read and input data into. Lastly, it writes this new wide dataframe to a CSV file.</p>
+<p>I then manually entered data into this CSV file. It was laborous.</p>
+</div>
+<div id="importing-the-data" class="section level2">
+<h2>Importing the Data</h2>
+<p>Once I entered the relevant data, R imports that file into a new dataframe. This dataframe is still “wide” and not “tidy” so the script with gather the cost information to return the dataframe to a tidy format.</p>
+<pre class="r"><code>db.prices.raw &lt;- read_csv(paste(input.folder, &quot;database.price.csv&quot;,sep=&quot;/&quot;),col_names = TRUE)
 
+
+DB1.fin &lt;- db.prices.raw %&gt;%
+  gather(key = Fiscal_Year, value = Cost, 8:16) %&gt;% 
+  filter(!is.na(Cost)) %&gt;%
+  mutate(Cost = as.numeric(Cost))</code></pre>
+<p>It also filters out rows that lack cost information and converts the cost data into numeric values for other manipulations.</p>
+<p>This dataframe, DB1.fin is now a tidy dataframe that contains the financial information for the databases.</p>
+</div>
+<div id="odds-and-ends" class="section level2">
+<h2>Odds and Ends</h2>
+<p>A few odds and ends to conclude these section:</p>
+<ul>
+<li>To include resources that aren’t in the template, I created additional rows in the CSV file before importing it back into R. These new lines won’t correspond to an usage data but I decided it was worth including those because it made other types of reporting easier.</li>
+<li>If the financial data at your institution was consolidated in a central system (and could be mappped to database usage information) this step of importing and tidying could look much different. This manual approach was born of need; better source data would have a much better import process.</li>
+<li>Right now, this project imports usage information as well as financial information. Other information, like google</li>
+</ul>
+</div>
