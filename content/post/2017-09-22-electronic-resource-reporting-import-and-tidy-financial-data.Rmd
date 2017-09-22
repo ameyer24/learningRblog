@@ -1,0 +1,45 @@
+---
+title: Electronic Resource Reporting - Import and Tidy Financial Data
+author: Andy Meyer
+date: '2017-09-22'
+slug: electronic-resource-reporting-import-and-tidy-financial-data
+categories:
+  - Electronic Resources
+tags:
+  - data import
+  - tidy
+  - tidyverse
+  - financial data
+---
+
+Early in the electronic resource reporting process I realized that an essential component to this analysis would be the financial information. So I then had to think about 1) what financial information would be useful and 2) how to import and use that data in R.
+
+Unlike standard counter reports - which have clear definitions and come in a standard format - the financial information for the electronic resource spending is not standardized and does not exist in one place. Therefore the data import really started as a data gathering process and, in some cases, as a data creation process. This was messy and the part of the project that feels the most "home-grown" and hacked together.
+
+## Creating the Template
+
+To make the data import process a little easier and to make the event matching process easier, I used data from database usage reports (stored as dataframe `DB1` in R) to create a template to start the process.
+```{r}
+db.price.template <- DB1 %>%
+  mutate(Year = year(Date)) %>%
+  distinct(Database, Publisher, Platform, Year) %>%
+  mutate(Price ="",
+         Notes="",
+         Fund="",
+         Order_Agent="",
+         Order_Term="Fiscal Year") %>%
+  spread(Year,Price) %>%
+  write_csv(paste(output.folder, "database.price.template.csv",sep="/"))
+```
+
+This chunk of code takes the tidy DB1 dataframe and reduces it to unique entries for every Database, Publisher, Platform, and Year. It then uses the mutate function to create empty columns for the following bits of data:
+
+* Price
+* Notes
+* Fund
+* Order_Agent
+* Order_Term - for this variable the program sets the default to "Fiscal Year" because the majority of our electronic resources are renewed on the fiscal year.
+
+Finally, it uses the spread function to turn the data from a long and tidy dataframe to wide dataframe that is easier for humans to read and input data into. Lastly, it writes this new wide dataframe to a CSV file.
+
+
