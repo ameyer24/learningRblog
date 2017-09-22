@@ -2,14 +2,14 @@
 title: Electronic Resource Reporting - Import and Tidy Financial Data
 author: Andy Meyer
 date: '2017-09-22'
-slug: electronic-resource-reporting-import-and-tidy-financial-data
 categories:
   - Electronic Resources
 tags:
   - data import
+  - financial data
   - tidy
   - tidyverse
-  - financial data
+slug: electronic-resource-reporting-import-and-tidy-financial-data
 ---
 
 Early in the electronic resource reporting process I realized that an essential component to this analysis would be the financial information. So I then had to think about 1) what financial information would be useful and 2) how to import and use that data in R.
@@ -42,4 +42,30 @@ This chunk of code takes the tidy DB1 dataframe and reduces it to unique entries
 
 Finally, it uses the spread function to turn the data from a long and tidy dataframe to wide dataframe that is easier for humans to read and input data into. Lastly, it writes this new wide dataframe to a CSV file.
 
+I then manually entered data into this CSV file. It was laborous.
 
+## Importing the Data
+
+Once I entered the relevant data, R imports that file into a new dataframe. This dataframe is still "wide" and not "tidy" so the script with gather the cost information to return the dataframe to a tidy format.
+
+```{r}
+db.prices.raw <- read_csv(paste(input.folder, "database.price.csv",sep="/"),col_names = TRUE)
+
+
+DB1.fin <- db.prices.raw %>%
+  gather(key = Fiscal_Year, value = Cost, 8:16) %>% 
+  filter(!is.na(Cost)) %>%
+  mutate(Cost = as.numeric(Cost))
+```
+
+It also filters out rows that lack cost information and converts the cost data into numeric values for other manipulations.
+
+This dataframe, DB1.fin is now a tidy dataframe that contains the financial information for the databases.
+
+## Odds and Ends
+
+A few odds and ends to conclude these section:
+
+* To include resources that aren't in the template, I  created additional rows in the CSV file before importing it back into R. These new lines won't correspond to an usage data but I decided it was worth including those because it made other types of reporting easier.
+* If the financial data at your institution was consolidated in a central system (and could be mappped to database usage information) this step of importing and tidying could look much different. This manual approach was born of need; better source data would have a much better import process.
+* Right now, this project imports usage information as well as financial information. Other information, like google 
