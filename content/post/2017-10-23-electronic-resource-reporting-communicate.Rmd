@@ -20,25 +20,26 @@ Thankfully, R is perfect for generating consistent reports. I used the ```RMarkd
 
 ## Data and Function Import
 Here is the first section of code in the RMarkdown document:
+
+
 ```{r echo=TRUE}
-knitr::opts_chunk$set(
-  echo = FALSE,
-	message = FALSE,
-	warning = FALSE)
 
 # I could probably clean this up to import everything...
-source("0 - Setup.R")
-source("1a - ImportTidy - DB1.R")
-source("1c - ImportTidy - Financials.R")
-source("2a - Transform - DBUsage.R")
-source("2b - Transform - Financials.R")
-source("2c - Transform - DBCostPerUse.R")
-source("4 - New Stuff.R")
+# I've commented this section out because it was causing problems...
+# source("0 - Setup.R")
+# source("1a - ImportTidy - DB1.R")
+# source("1c - ImportTidy - Financials.R")
+# source("2a - Transform - DBUsage.R")
+# source("2b - Transform - Financials.R")
+# source("2c - Transform - DBCostPerUse.R")
+# source("4 - New Stuff.R")
 ```
+
+
 Running this section of code set up the preferences for this rMarkdown file and loads all of the data and functions from the previous steps of the process. After running this chunk of code all of the data is loaded and this document can call and use any function defined earlier.
 
 ## Defining Variables
-```{r Database Set Up, echo=TRUE}
+```{r echo=TRUE, message=FALSE, warning=FALSE}
 # Defining Variables for this report.
 Database = "ATLA Religion Database with ATLASerials"
 StartYear = 2014

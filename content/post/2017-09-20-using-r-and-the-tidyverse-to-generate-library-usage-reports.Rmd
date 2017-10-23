@@ -1,15 +1,12 @@
 ---
 title: Using R and the Tidyverse to Generate Library Usage Reports
 author: Andy Meyer
-date: '2017-09-20'
+date: '2017-10-24'
 categories:
   - Electronic Resources
 tags:
   - tidyverse
 slug: using-r-and-the-tidyverse-to-generate-library-usage-reports
-output: html_document
-editor_options: 
-  chunk_output_type: console
 ---
 
 This article describes a project that used the statistical programming language R to generate reports about electronic usage and spending. This project had two main goals. First, to automate and systematize the process of gathering, compiling, and communicating usage information from electronic resource usage and information. Second, to increase library staff capacity for data science and create a starting point to share with other libraries. This project uses a set of R packages known as the “Tidyverse” and employs a general approach to data science that can be extended to manage and communicate data from other library systems such as circulation transactions, interlibrary loan usage, or log analysis.
@@ -63,7 +60,7 @@ Conveying this data in a tidy dataframe would keep the Database, Publisher, Plat
 The first step of this project is to import the data into a single tidy dataframe in R. This step of the process begins with a folder that contains a variety of reports from different vendors, in different file formats, spanning inconsistent date ranges and ends with a single, tidy dataframe.
 
 #### Tidy the Data from Counter Reports
-```{r}
+```{r echo=TRUE}
 # Transforms data from the standard Counter Format to a tidy dataframe.
 tidy.DB1reports <- function(df) {
   df %>%
@@ -84,7 +81,7 @@ This function performs operations on a dataframe (df) to make it tidy. Walking t
 
 #### Import the Data from the Files
 
-```{r}
+```{r echo=TRUE}
 # This function imports data from CSV files and makes that data tidy.
 csv.importer <- function(file) {
   file %>%
@@ -104,7 +101,7 @@ This simple functions each import a file by reading the file and then tidying th
 ### Loading and Tidying
 The project now has functions that can tidy a Counter Report as well as load a particular file. We now need to complete the process by applying these functions to all the files in a given folder.
 
-```{r}
+```{r echo=TRUE}
 # These functions load DB1 reports from a given folder.
 load.DB1.csv <- function(path) { 
   csv.files <- dir(path, pattern = "*.(CSV|csv)", full.names = TRUE)
@@ -123,12 +120,14 @@ For example, the `load.DB1.csv` function accepts a path to a folder as the only 
 #### The Tidy Dataframe!
 
 After defining the last functions, we can now use these functions to import and tidy all the data from a specified folder.
-```{r echo=TRUE,eval=FALSE}
+
+```{r eval=FALSE, include=FALSE}
 DB1.data.csv <- load.DB1.csv(DB1folder)
 DB1.data.excel <- load.DB1.excel(DB1folder)
 
 DB1 <- unique(rbind(DB1.data.csv,DB1.data.excel))
 ```
+
 The final dataframe, called DB1, binds together the CSV and Excel data into a single dataframe. The `unique` operation deletes all duplicate data which might be present in the raw Counter Reports that could be run for arbitary date ranges.
 
 ### Transform and Visualize

@@ -1,15 +1,12 @@
 ---
 title: Using R and the Tidyverse to Generate Library Usage Reports
 author: Andy Meyer
-date: '2017-09-20'
+date: '2017-10-24'
 categories:
   - Electronic Resources
 tags:
   - tidyverse
 slug: using-r-and-the-tidyverse-to-generate-library-usage-reports
-output: html_document
-editor_options: 
-  chunk_output_type: console
 ---
 
 
@@ -119,10 +116,6 @@ load.DB1.excel &lt;- function(path) {
 <div id="the-tidy-dataframe" class="section level4">
 <h4>The Tidy Dataframe!</h4>
 <p>After defining the last functions, we can now use these functions to import and tidy all the data from a specified folder.</p>
-<pre class="r"><code>DB1.data.csv &lt;- load.DB1.csv(DB1folder)
-DB1.data.excel &lt;- load.DB1.excel(DB1folder)
-
-DB1 &lt;- unique(rbind(DB1.data.csv,DB1.data.excel))</code></pre>
 <p>The final dataframe, called DB1, binds together the CSV and Excel data into a single dataframe. The <code>unique</code> operation deletes all duplicate data which might be present in the raw Counter Reports that could be run for arbitary date ranges.</p>
 </div>
 </div>

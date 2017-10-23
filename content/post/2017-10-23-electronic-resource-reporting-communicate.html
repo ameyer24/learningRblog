@@ -1,0 +1,47 @@
+---
+title: Electronic Resource Reporting - Communicate
+author: Andy Meyer
+date: '2017-10-23'
+slug: electronic-resource-reporting-communicate
+categories:
+  - Electronic Resources
+tags:
+  - tidy
+  - tidyverse
+  - communicate
+  - rmarkdown
+---
+
+
+
+<p>After the import/tidy stage and appropriate transformations have been defined, the last step is to communicate the results to the intended audience. For this project, I have an audience of my fellow librarians with the data to support our annual review of online resources. I wanted a concise and consistent report that coudl allow for multiple databases to be compared at once.</p>
+<p>Thankfully, R is perfect for generating consistent reports. I used the <code>RMarkdown</code> package to do this and it worked wonderfully.</p>
+<div id="rmarkdown" class="section level2">
+<h2>RMarkdown</h2>
+</div>
+<div id="data-and-function-import" class="section level2">
+<h2>Data and Function Import</h2>
+<p>Here is the first section of code in the RMarkdown document:</p>
+<pre class="r"><code># I could probably clean this up to import everything...
+# I&#39;ve commented this section out because it was causing problems...
+# source(&quot;0 - Setup.R&quot;)
+# source(&quot;1a - ImportTidy - DB1.R&quot;)
+# source(&quot;1c - ImportTidy - Financials.R&quot;)
+# source(&quot;2a - Transform - DBUsage.R&quot;)
+# source(&quot;2b - Transform - Financials.R&quot;)
+# source(&quot;2c - Transform - DBCostPerUse.R&quot;)
+# source(&quot;4 - New Stuff.R&quot;)</code></pre>
+<p>Running this section of code set up the preferences for this rMarkdown file and loads all of the data and functions from the previous steps of the process. After running this chunk of code all of the data is loaded and this document can call and use any function defined earlier.</p>
+</div>
+<div id="defining-variables" class="section level2">
+<h2>Defining Variables</h2>
+<pre class="r"><code># Defining Variables for this report.
+Database = &quot;ATLA Religion Database with ATLASerials&quot;
+StartYear = 2014
+EndYear = 2018</code></pre>
+<p>These reports are current structred on reports on a particular database. By defining these variables once at the beginning of the document the rest of the code can be used without having to update the database name and/or date ranges in multiple spots.</p>
+</div>
+<div id="generating-the-report" class="section level2">
+<h2>Generating the Report</h2>
+<p>The reports then proceed by combining text with the results of R functions defined earlier. RMarkdown allows for some limited formatting like headings and page breaks that make the report very readable and professional. There are sevearl output options but the PDF option is the method I have focused on thus far.</p>
+</div>
