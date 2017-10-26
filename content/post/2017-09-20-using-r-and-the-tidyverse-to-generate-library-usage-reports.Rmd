@@ -12,12 +12,12 @@ slug: using-r-and-the-tidyverse-to-generate-library-usage-reports
 This article describes a project that used the statistical programming language R to generate reports about electronic usage and spending. This project had three main goals. First, to automate and systematize the process of gathering, compiling, and communicating usage information from electronic resource usage and information. Second, to increase library staff capacity for data science. Third, to provide a framework for other libraries to use and extend. This project is focused on electronic resource usage information in the form of Counter Reports but can be extended to manage and communicate data from other library systems such as circulation transactions, interlibrary loan usage, or log analysis.
 
 ## Background
-With library budgets shrinking and the cost of online resources growing, many libraries must critically examine electronic resource usage and related costs to make responsible collection development decisions. Yet gathering this information, making this data useable, and communicating it to a variety of stakeholders is a very difficult process.
+With library budgets shrinking and the cost of online resources growing, many libraries must critically examine electronic resource usage and related costs to make responsible collection development decisions. Yet gathering this information, making this data usable, and communicating it to a variety of stakeholders is a very difficult process.
 
 ### R and the Tidyverse
-R is an open source programming language freely available under the GNU General Public License. R excels in statistical computing and is growing in popularity across many discplines. R enjoys a large and active user community as well as a huge numbers of packages that extend the basic functions of R. The growing popularity of R, the strong and active user community, ability to do reproducible research, and the open nature of R make this language a viable option for many library applications. Furthermore, developing staff expertise in R may help position the library to take on additional roles in data management, ease the work of scholarly publishing, and create new connections on campus
+R is an open source programming language freely available under the GNU General Public License. R excels in statistical computing and is growing in popularity across many disciplines. R enjoys a large and active user community as well as a huge numbers of packages that extend the basic functions of R. The growing popularity of R, the strong and active user community, ability to do reproducible research, and the open nature of R make this language a viable option for many library applications. Furthermore, developing staff expertise in R may help position the library to take on additional roles in data management, ease the work of scholarly publishing, and create new connections on campus
 
-The tidyverse is set of R packages that “share a common philosophy of data and R programming and are designed to work together naturally.” (http://r4ds.had.co.nz/introduction.html)
+The Tidyverse is set of R packages that “share a common philosophy of data and R programming and are designed to work together naturally.” ^[http://r4ds.had.co.nz/introduction.html]
 
 ### Counter Reports
 COUNTER is a non-profit organization that provides libraries, publishers, and vendors a Code of Practice and set of definitions that facilitates the standard and consistent way to look at electronic resource usage. The project described in this paper focused on using the Database 1 reports generated under the fourth revision of Counter. However, the general approach outlined here could easily be extended to include other report types and/or reports from other revisions of the counter.
@@ -31,9 +31,9 @@ This project approaches data science following the model proposed by Hadley Wick
 
 ![](http://r4ds.had.co.nz/diagrams/data-science.png)
 
-This project has also adopted a functional approach by doing most of the work through simple functions. This approach limits redundant code and makes the meaning of the code more transparent and easily extenible. Lastly, the code is written for clarity and simplicity; it is not written to optimize performance. The hope is the the variable and function names as well as comments allow  others to easily use and adapt this code to their local institutional needs.
+This project has also adopted a functional approach by doing most of the work through simple functions. This approach limits redundant code and makes the meaning of the code more transparent and easily extensible. Lastly, the code is written for clarity and simplicity; it is not written to optimize performance. The hope is the the variable and function names as well as comments allow  others to easily use and adapt this code to their local institutional needs.
 
-Lastly, this project makes extensive use of the pipe function in R. Link to desciption in Hadley's book.
+Lastly, this project makes extensive use of the pipe function in R. Link to description in Hadley's book.
 
 ### Tidy Data
 Before moving on, a note about language and terminology. In the context of the Tidyverse and throughout this paper, the word “tidy” carries a specific and technical definition.
@@ -68,7 +68,7 @@ This screenshot shows tidy data because because all of the variables are columns
 
 
 ### Import and Tidy
-The first step of this project is to import the data from all the files in a given folder and create a single tidy dataframe in R. This process was complicated by the fact that the folder contained files in a variety of file formats that spanned inconsistent and overlapping date ranges. With these needs in mind, the functions in this section can handle Counter Reports as both CSV and Excel files with the abiltiy to extend and customized to meet local needs. These functions are designed to work with DB1 reports but could easily be adapted to import and tidy other Counter reports.
+The first step of this project is to import the data from all the files in a given folder and create a single tidy dataframe in R. This process was complicated by the fact that the folder contained files in a variety of file formats that spanned inconsistent and overlapping date ranges. With these needs in mind, the functions in this section can handle Counter Reports as both CSV and Excel files with the ability to extend and customized to meet local needs. These functions are designed to work with DB1 reports but could easily be adapted to import and tidy other Counter reports.
 
 #### Tidy the Data from Counter Reports
 ```{r echo=TRUE}
@@ -107,7 +107,7 @@ excel.importer <- function(file) {
 }
 ```
 
-These functions accept a single file as an parameter and then import that data by reading the file - skipping the first 7 lines per Counter standards - and then tidying the data using the function defined above. It is somewhat elegent to have two functions that do the same thing but keep the two function separate improves the readability of the code and is effective, conceptually simple, and easily extendable.
+These functions accept a single file as an parameter and then import that data by reading the file - skipping the first 7 lines per Counter standards - and then tidying the data using the function defined above. It is somewhat elegant to have two functions that do the same thing but keep the two function separate improves the readability of the code and is effective, conceptually simple, and easily extendable.
 
 ### Loading and Tidying
 This phase of the project now has functions that can load a file and "tidy" the data; we now need a function that can apply these functions to all the files in a given folder.
@@ -127,7 +127,7 @@ load.DB1.excel <- function(path) {
 }
 ```
 
-These functions accept a path to a folder as a parameter and then create a list of filenames for files that match a particular pattern - CSV files and XL* files respectively. The second line applies the appropriate import function to the list of files. Lastly, the `do.call(rbind, tables)` line binds together these tables by row.
+These functions accept a path to a folder as a parameter and then create a list of file names for files that match a particular pattern - CSV files and XL* files respectively. The second line applies the appropriate import function to the list of files. Lastly, the `do.call(rbind, tables)` line binds together these tables by row.
 
 #### The Tidy Dataframe!
 
@@ -140,13 +140,13 @@ DB1.data.excel <- load.DB1.excel(DB1folder)
 DB1 <- unique(rbind(DB1.data.csv,DB1.data.excel))
 ```
 
-These steps create two seperate dataframes call `DB1.data.csv` and `DB1.data.excel` that contain the data from the respective file formats. The final line combines the data into in a single dataframe called DB1. The `unique` operation deletes any duplicate observations that may be present in the original usage reports. These duplicate observations would be caused by counter reports with overlapping data ranges.
+These steps create two separate dataframes call `DB1.data.csv` and `DB1.data.excel` that contain the data from the respective file formats. The final line combines the data into in a single dataframe called DB1. The `unique` operation deletes any duplicate observations that may be present in the original usage reports. These duplicate observations would be caused by counter reports with overlapping data ranges.
 
 ### Transform, Visualize, and Model
 
 After importing and tidying the usage data into R, the next step was to transform, visualize and model this data. Right now, this project performs basic transformations such as filtering, summarizing, and graphing the data. However, given the tidy structure of the data and the powerful tools that R provides for data transformation, there is an opportunity to build transformations that allow for new insights or create graphics that follow best practices.
 
-Like the import and tidy process, this project uses a functional approach to handle transformations and visualizations. The majority of these functions perform transformations on the tidy dataframe created earlier without changing or updating that dataframe. Rather than exhaustively survey all the transformations, this paper will highlight a single function that hopefully will demostrate the basic structure of this part of the process, the power and opportunities to visualize and transform data, and the relative ease of writing functions in R.
+Like the import and tidy process, this project uses a functional approach to handle transformations and visualizations. The majority of these functions perform transformations on the tidy dataframe created earlier without changing or updating that dataframe. Rather than exhaustively survey all the transformations, this paper will highlight a single function that hopefully will demonstrate the basic structure of this part of the process, the power and opportunities to visualize and transform data, and the relative ease of writing functions in R.
 
 Like the other steps, I've adopted a functional approach to handle these transformations. All of the functions described here perform transformations on the same dataframe - the database usage statistics in the tidy format - without ever changing or updating that dataframe. Here is the function:
 
@@ -185,7 +185,7 @@ This function is called `usage.graph.database.acad.term` and it filters the orig
 
 This function accepts four parameters - database name, start year, end year, and action - and applies these parameters as filters to the tidy dataframe. These filters return only observations matching the parameters.
 
-The `mutate` function creates new variables from existing variables. In this case, the `mutate` function creates three new variables from the existing date information: Year, Month, and Academic Term. Strictly speaking it was not necesary to create a new variable for month - the Academic Term could be derived directly from the date - but it has been included in the hopes that it makes the code more accessible. The `mutate` function that creats the Academic Term variable uses the `derivedFactor` from the Mosaic package.
+The `mutate` function creates new variables from existing variables. In this case, the `mutate` function creates three new variables from the existing date information: Year, Month, and Academic Term. Strictly speaking it was not necessary to create a new variable for month - the Academic Term could be derived directly from the date - but it has been included in the hopes that it makes the code more accessible. The `mutate` function that creates the Academic Term variable uses the `derivedFactor` from the Mosaic package.
 
 Thus far, the function has filtered out unwanted observations and created three new variables from the date field. The next steps group the data and then summarize the usage data by summing based on academic term.
 
@@ -193,7 +193,7 @@ The final section, beginning with the call to the `ggplot` function, plots the n
 
 This functions creates a base layer of the summarized data and sets the aesthetic properties for the entire graph; the Academic Term on the x axis and the Usage on the y axis. The next layer creates a bar graph; the color of the bars will be determined by the Year, the stat=identity does something important, and the position will be dodge (i.e. not stacked). The last three commands add some features such as labels.
 
-In a few short lines, this function has transformed the usage data into a professional and easily interpreted visualization that shows changes in usage by semester. Creating a comparable graph in Excel, on the other hand, would have been a very laborous and time consuming process. Furthermore, this function can be updated to apply to a different database, extend over different date ranges, or used by any other library that has library usage data in a tidy format.
+In a few short lines, this function has transformed the usage data into a professional and easily interpreted visualization that shows changes in usage by semester. Creating a comparable graph in Excel, on the other hand, would have been a very laborious and time consuming process. Furthermore, this function can be updated to apply to a different database, extend over different date ranges, or used by any other library that has library usage data in a tidy format.
 
 ### Communicate
 
@@ -201,10 +201,10 @@ To accomplish the final stage of the process - communicating results to an extra
 
 This project's R Markdown file begins by calling all the previous files as a `source`. This allows the R Markdown document to use the underlying data and all of the functions defined in earlier files. Next, because this project hopes to generate standard reports for a many different databases, the document specifies a database and data ranges at the beginning of the document. With these definitions in place, the rest of the document can call and execute R code without the need for repetitive data entry or customization. For example, updating the report to cover a different date range or report on a different database requires changing a single variable. Generating the same report on a regular basis is trivially simple; simply add the data in the source folder and re-run the report to import and include new information.
 
-So far, this project has focused on automating and standardizing reports to save time and energy. However, this same package and features could also be used to create highly customized and specific reports that are narrowly tailored for a particulary audience. R Markdown and R generally is suited to creating highly standardized reports through automated processes or allowing deep exploration of unique datasets and communicate specific messages though custom reports.
+So far, this project has focused on automating and standardizing reports to save time and energy. However, this same package and features could also be used to create highly customized and specific reports that are narrowly tailored for a particular audience. R Markdown and R generally is suited to creating highly standardized reports through automated processes or allowing deep exploration of unique datasets and communicate specific messages though custom reports.
 
 ## Conclusion
 Using R and the Tidyverse to generate library usage reports has many clear advantages relative to alternative methods. Automating the reporting process for electronic resource usage has the potential to save hours of staff time and create standardized reports that allow for better collection development decisions. Creating transformations and visualizations also has the ability to create new insights and raise new questions.
 
-Additionally, this approach provides the library with many new opportunities. Learning and using R for data projects builds capacity for other data projects and collaborations across campus. Using an free, open source language allows allows libraries to build and share data structures, transformations, and visualizations. The programming langauage R is powerful enough to recreate any data transformation and is much more shareable than data manipulation done in spreadsheets or in proprietary software. Lastly, R has the ability to combine data from a variety of sources. Data from circulation transactions, gate counts, computer usage, and head counts could be combined to get a more comprehensive sense of library usage.
+Additionally, this approach provides the library with many new opportunities. Learning and using R for data projects builds capacity for other data projects and collaborations across campus. Using an free, open source language allows allows libraries to build and share data structures, transformations, and visualizations. The programming language R is powerful enough to recreate any data transformation and is much more shareable than data manipulation done in spreadsheets or in proprietary software. Lastly, R has the ability to combine data from a variety of sources. Data from circulation transactions, gate counts, computer usage, and head counts could be combined to get a more comprehensive sense of library usage.
 
