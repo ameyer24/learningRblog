@@ -11,14 +11,14 @@ slug: using-r-and-the-tidyverse-to-generate-library-usage-reports
 
 
 
-<p>This article describes a project that used the statistical programming language R to generate reports about electronic usage and spending. This project had three main goals. First, to automate and systematize the process of gathering, compiling, and communicating usage information from electronic resource usage and information. Second, to increase library staff capacity for data science. Third, to provide a framework for other libraries to use and extend. This project is focused on electronic resource usage information in the form of Counter Reports but can be extended to manage and communicate data from other library systems such as circulation transactions, interlibrary loan usage, or log analysis.</p>
+<p>This article describes a project that used the statistical programming language R to generate reports about electronic usage and spending. This project had three main goals. First, to automate and systematize the process of gathering, compiling, and communicating data about electronic resource usage. Second, to increase library staff capacity for data science. Third, to provide a shareable framework and model for other libraries to use when dealing with data intensive projects. This project focused on electronic resource usage information in the form of Counter Reports but can be extended to manage and communicate data from a variety of other library systems or other data sources.</p>
 <div id="background" class="section level2">
 <h2>Background</h2>
-<p>With library budgets shrinking and the cost of online resources growing, many libraries must critically examine electronic resource usage and related costs to make responsible collection development decisions. Yet gathering this information, making this data usable, and communicating it to a variety of stakeholders is a very difficult process.</p>
+<p>With library budgets shrinking and the cost of online resources growing, many libraries must critically examine electronic resource usage and related costs to make responsible collection development decisions. Yet gathering this information, making this data usable, and communicating relevant information is a difficult and labor intensive process. The context for this particular project is providing electronic resource usage information to other library staff to aid collection development decisions. However, this approach could be extended to deal with other data and communicate those results to a wide variety of stakeholders.</p>
 <div id="r-and-the-tidyverse" class="section level3">
 <h3>R and the Tidyverse</h3>
-<p>R is an open source programming language freely available under the GNU General Public License. R excels in statistical computing and is growing in popularity across many disciplines. R enjoys a large and active user community as well as a huge numbers of packages that extend the basic functions of R. The growing popularity of R, the strong and active user community, ability to do reproducible research, and the open nature of R make this language a viable option for many library applications. Furthermore, developing staff expertise in R may help position the library to take on additional roles in data management, ease the work of scholarly publishing, and create new connections on campus</p>
-<p>The Tidyverse is set of R packages that “share a common philosophy of data and R programming and are designed to work together naturally.” <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
+<p>R is an open source programming language freely available under the GNU General Public License. R excels in statistical computing and is growing in popularity across many disciplines. R enjoys a large and active user community as well as a number of packages that extend the basic functions of R. The growing popularity of R, the strong and active user community, the ability to do reproducible and rigorous data analysis, and the open nature of R make this an excellent option for many library applications. Furthermore, developing staff expertise in R may position the library to take on additional roles in data management and create new connections on campus</p>
+<p>The Tidyverse is set of R packages that “share a common philosophy of data and R programming and are designed to work together naturally.” <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> The Tidyverse is a great place to begin learning R because these packages are widely adopted and relatively intuitive. There is also an abundance of high quality documentation that is freely available online.</p>
 </div>
 <div id="counter-reports" class="section level3">
 <h3>Counter Reports</h3>
@@ -37,39 +37,358 @@ slug: using-r-and-the-tidyverse-to-generate-library-usage-reports
 <img src="http://r4ds.had.co.nz/diagrams/data-science.png" />
 
 </div>
-<p>This project has also adopted a functional approach by doing most of the work through simple functions. This approach limits redundant code and makes the meaning of the code more transparent and easily extensible. Lastly, the code is written for clarity and simplicity; it is not written to optimize performance. The hope is the the variable and function names as well as comments allow others to easily use and adapt this code to their local institutional needs.</p>
-<p>Lastly, this project makes extensive use of the pipe function in R. Link to description in Hadley’s book.</p>
+<p>Following another tenet of the Tidyverse, this project has adopted a functional approach to R. This approach limits redundant code and makes the meaning of the code more transparent. In terms of style, the code is written for clarity and simplicity; it is not written to optimize performance. The hope is the the variable and function names as well as comments allow others to easily use and adapt this code to their local institutional needs. Lastly, this project makes extensive use of the pipe function in R. As a core member of the Tidyverse, this function makes R code more readable and beautiful by combining complex operations without requiring nested functions. The book “R for Data Science” offers a very clear explanation of the pipe function.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a></p>
 <div id="tidy-data" class="section level3">
 <h3>Tidy Data</h3>
-<p>Before moving on, a note about language and terminology. In the context of the Tidyverse and throughout this paper, the word “tidy” carries a specific and technical definition.</p>
+<p>Before moving on, a note about terminology. In the context of the Tidyverse and throughout this paper, the word “tidy” carries a specific and technical definition. The goal of tidy data is to create an underlying structure that makes various types of transformation easier. Hadley Wickham offers this definition of tidy data:</p>
 <p>“Tidy data is a standard way of mapping the meaning of a dataset to its structure. A dataset is messy or tidy depending on how rows, columns and tables are matched up with observations, variables and types. In tidy data:</p>
 <ol style="list-style-type: decimal">
 <li>Each variable forms a column.</li>
 <li>Each observation forms a row.</li>
 <li>Each type of observational unit forms a table.</li>
 </ol>
-<p>Messy data is any other arrangement of the data.&quot;</p>
-<p>Counter Reports, although standardized, are messy according to this definition. The tidying process starts by identifying the variables of these reports; for the database reports these variables are:</p>
+<p>Messy data is any other arrangement of the data.“<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a></p>
+<p>According to this definition, COUNTER-compliant reports, although standardized, are messy because the structure of the data - the colunn and row arrangement - does not match correspond with the observations and variables. The process of tidying data begins by identifying the variables. For COUNTER-compliant database report 1, the variables are:</p>
 <ul>
 <li>Database</li>
 <li>Publisher</li>
 <li>Platform</li>
 <li>User Activity</li>
 <li>Date (expressed as Month-Year)</li>
+<li>Usage</li>
 </ul>
-<p>For Counter Reports, the observations are the usage for a given set of variables.</p>
-<p>Conveying this visually; variables are circled in red and the observations are noted in the green box. <img src="/img/counterreport2.png" /></p>
-<p>Conveying this data in a tidy dataframe would keep the Database, Publisher, Platform, and User Activity columns and add columns for Date and Usage. <img src="/img/tidyDB1data.JPG" /> This screenshot shows tidy data because because all of the variables are columns and each observation is a row.</p>
+<p>This can be conveyed visually using the sample data provided by COUNTER.<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a> In this example, variables are circled in red and the observations are noted in the green box.</p>
+<p>(screenshot)</p>
+<p>Skipping the first 7 lines of the file, this data would look like this:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Database</th>
+<th align="left">Publisher</th>
+<th align="left">Platform</th>
+<th align="left">User Activity</th>
+<th align="left">Reporting Period Total</th>
+<th align="left">Jan-2011</th>
+<th align="left">Feb-2011</th>
+<th align="left">Mar-2011</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Database AA</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Regular Searches</td>
+<td align="left">7814</td>
+<td align="left">2543</td>
+<td align="left">2267</td>
+<td align="left">3004</td>
+</tr>
+<tr class="even">
+<td align="left">Database AA</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Searches-federated and automated</td>
+<td align="left">4889</td>
+<td align="left">1689</td>
+<td align="left">1589</td>
+<td align="left">1611</td>
+</tr>
+<tr class="odd">
+<td align="left">Database AA</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Result Clicks</td>
+<td align="left">12745</td>
+<td align="left">4022</td>
+<td align="left">3392</td>
+<td align="left">5331</td>
+</tr>
+<tr class="even">
+<td align="left">Database AA</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Record Views</td>
+<td align="left">9585</td>
+<td align="left">3032</td>
+<td align="left">2777</td>
+<td align="left">3776</td>
+</tr>
+<tr class="odd">
+<td align="left">Database BB</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Regular Searches</td>
+<td align="left">3478</td>
+<td align="left">1098</td>
+<td align="left">1066</td>
+<td align="left">1314</td>
+</tr>
+<tr class="even">
+<td align="left">Database BB</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Searches-federated and automated</td>
+<td align="left">2613</td>
+<td align="left">887</td>
+<td align="left">814</td>
+<td align="left">912</td>
+</tr>
+<tr class="odd">
+<td align="left">Database BB</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Result Clicks</td>
+<td align="left">5350</td>
+<td align="left">1776</td>
+<td align="left">1759</td>
+<td align="left">1815</td>
+</tr>
+<tr class="even">
+<td align="left">Database BB</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Record Views</td>
+<td align="left">3595</td>
+<td align="left">1215</td>
+<td align="left">1066</td>
+<td align="left">1314</td>
+</tr>
+</tbody>
+</table>
+<p>Conveying this data in a tidy dataframe would keep the Database, Publisher, Platform, and User Activity columns and add columns for Date and Usage.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Database</th>
+<th align="left">Publisher</th>
+<th align="left">Platform</th>
+<th align="left">User Activity</th>
+<th align="left">Date</th>
+<th align="right">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Database AA</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Regular Searches</td>
+<td align="left">Jan-2011</td>
+<td align="right">2543</td>
+</tr>
+<tr class="even">
+<td align="left">Database AA</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Searches-federated and automated</td>
+<td align="left">Jan-2011</td>
+<td align="right">1689</td>
+</tr>
+<tr class="odd">
+<td align="left">Database AA</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Result Clicks</td>
+<td align="left">Jan-2011</td>
+<td align="right">4022</td>
+</tr>
+<tr class="even">
+<td align="left">Database AA</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Record Views</td>
+<td align="left">Jan-2011</td>
+<td align="right">3032</td>
+</tr>
+<tr class="odd">
+<td align="left">Database BB</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Regular Searches</td>
+<td align="left">Jan-2011</td>
+<td align="right">1098</td>
+</tr>
+<tr class="even">
+<td align="left">Database BB</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Searches-federated and automated</td>
+<td align="left">Jan-2011</td>
+<td align="right">887</td>
+</tr>
+<tr class="odd">
+<td align="left">Database BB</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Result Clicks</td>
+<td align="left">Jan-2011</td>
+<td align="right">1776</td>
+</tr>
+<tr class="even">
+<td align="left">Database BB</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Record Views</td>
+<td align="left">Jan-2011</td>
+<td align="right">1215</td>
+</tr>
+<tr class="odd">
+<td align="left">Database AA</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Regular Searches</td>
+<td align="left">Feb-2011</td>
+<td align="right">2267</td>
+</tr>
+<tr class="even">
+<td align="left">Database AA</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Searches-federated and automated</td>
+<td align="left">Feb-2011</td>
+<td align="right">1589</td>
+</tr>
+<tr class="odd">
+<td align="left">Database AA</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Result Clicks</td>
+<td align="left">Feb-2011</td>
+<td align="right">3392</td>
+</tr>
+<tr class="even">
+<td align="left">Database AA</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Record Views</td>
+<td align="left">Feb-2011</td>
+<td align="right">2777</td>
+</tr>
+<tr class="odd">
+<td align="left">Database BB</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Regular Searches</td>
+<td align="left">Feb-2011</td>
+<td align="right">1066</td>
+</tr>
+<tr class="even">
+<td align="left">Database BB</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Searches-federated and automated</td>
+<td align="left">Feb-2011</td>
+<td align="right">814</td>
+</tr>
+<tr class="odd">
+<td align="left">Database BB</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Result Clicks</td>
+<td align="left">Feb-2011</td>
+<td align="right">1759</td>
+</tr>
+<tr class="even">
+<td align="left">Database BB</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Record Views</td>
+<td align="left">Feb-2011</td>
+<td align="right">1066</td>
+</tr>
+<tr class="odd">
+<td align="left">Database AA</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Regular Searches</td>
+<td align="left">Mar-2011</td>
+<td align="right">3004</td>
+</tr>
+<tr class="even">
+<td align="left">Database AA</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Searches-federated and automated</td>
+<td align="left">Mar-2011</td>
+<td align="right">1611</td>
+</tr>
+<tr class="odd">
+<td align="left">Database AA</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Result Clicks</td>
+<td align="left">Mar-2011</td>
+<td align="right">5331</td>
+</tr>
+<tr class="even">
+<td align="left">Database AA</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Record Views</td>
+<td align="left">Mar-2011</td>
+<td align="right">3776</td>
+</tr>
+<tr class="odd">
+<td align="left">Database BB</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Regular Searches</td>
+<td align="left">Mar-2011</td>
+<td align="right">1314</td>
+</tr>
+<tr class="even">
+<td align="left">Database BB</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Searches-federated and automated</td>
+<td align="left">Mar-2011</td>
+<td align="right">912</td>
+</tr>
+<tr class="odd">
+<td align="left">Database BB</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Result Clicks</td>
+<td align="left">Mar-2011</td>
+<td align="right">1815</td>
+</tr>
+<tr class="even">
+<td align="left">Database BB</td>
+<td align="left">Publisher X</td>
+<td align="left">Platform Z</td>
+<td align="left">Record Views</td>
+<td align="left">Mar-2011</td>
+<td align="right">1314</td>
+</tr>
+</tbody>
+</table>
+<p>The data in this table is tidy because all of the variables are in columns and each observation is a column.</p>
 </div>
 <div id="setup" class="section level3">
 <h3>Setup</h3>
+<p>As a preliminary step, this project includes a file that sets up the rest of the process by loading the appropriate packages and by setting up the folder structure.</p>
+<pre class="r"><code># Load packages
+library(tidyverse)
+library(readxl)
+library(lubridate)
+library(mosaic)
+library(zoo)
+library(scales)
+library(knitr)
+
+# Setting up the folders
+input.folder &lt;- &quot;C:/DataScience/inputs&quot;
+output.folder &lt;- &quot;C:/DataScience/outputs&quot;
+DB1folder &lt;- &quot;C:/DataScience/inputs/DB1Reports&quot;</code></pre>
+<p>The <code>library</code> commands load the appropriate packages that are required in this project. The set up file explicitly names the input and output folders as well as the exact folder containing the Database Report 1 files. These explicit definitions are intended to make the code’s functions and requirements clear and could be updated to match local system pathways. A better solution for advanced users might be to use the set working directory function - <code>setwd()</code> - but making these definitions explict and not relative seems to be easier to grasp.</p>
 </div>
 <div id="import-and-tidy" class="section level3">
 <h3>Import and Tidy</h3>
-<p>The first step of this project is to import the data from all the files in a given folder and create a single tidy dataframe in R. This process was complicated by the fact that the folder contained files in a variety of file formats that spanned inconsistent and overlapping date ranges. With these needs in mind, the functions in this section can handle Counter Reports as both CSV and Excel files with the ability to extend and customized to meet local needs. These functions are designed to work with DB1 reports but could easily be adapted to import and tidy other Counter reports.</p>
+<p>The first step of this project is to import the data from all the files folder defined above and create a single tidy dataframe in R. This process might be complicated by a variety of file formats and inconsistent data ranges. To address these problems, the functions in this project can handele COUNTER-compliant reports as both CSV and Excel files while providing a generalizable framework for other file types. The functions can also de-duplicate the usage data so that reports spanning overlapping date ranges will not cause problems. An area of improvement would be to improve handling of missing data. These functions are designed to work with Database Report 1 data but could easily be adapted to import and tidy other COUNTER-compliant reports.</p>
 <div id="tidy-the-data-from-counter-reports" class="section level4">
 <h4>Tidy the Data from Counter Reports</h4>
-<pre class="r"><code># Transforms data from the standard Counter Format to a tidy dataframe.
+<pre class="r"><code># Transforms data from the standard COUNTER-compliant report to a tidy dataframe.
 tidy.DB1reports &lt;- function(df) {
   df %&gt;%
     select(-c(5)) %&gt;%
@@ -78,17 +397,18 @@ tidy.DB1reports &lt;- function(df) {
     mutate(Usage = as.numeric(Usage)) %&gt;%
     rename(&quot;User_Activity&quot; = &quot;User Activity&quot;)
 }</code></pre>
-<p>This function performs sequential operations on a dataframe that when applied to a confirming DB1 Counter 1 report makes it tidy. Walking through each line:</p>
+<p>This function transform data from a COUNTER-compliant format to a tidy dataframe. Looking at each line in detail:</p>
 <ol style="list-style-type: decimal">
-<li><code>select(-c(5))</code> - Deletes the 5th column. The Reporting Period Total is not useful for this operation and is therefore excluded.</li>
-<li><code>gather(Date, Usage, -c(1:4))</code> - The gather function is the primary way of moving data from a “wide” format into a tidy “long” format. This step moves data from multiple columns (everything except for columns 1 to 4) and creates a new variable called “Date” that is defined as the key and a new column called “Usage” that is the value.</li>
-<li><code>mutate(Date = as.yearmon(Date, &quot;%b-%Y&quot;))</code> This mutates the Date column from a character variable to a YearMon data type. This is important for date operations later on.</li>
-<li><code>mutate(Usage = as.numeric(Usage))</code> - Changes the Usage values from character strings to numbers. Important for later transformations.</li>
-<li><code>rename(&quot;User_Activity&quot; = &quot;User Activity&quot;)</code> - Renames this column to avoid the space in the column name. Probably optional but made life easier while working with the data.</li>
+<li><code>select(-c(5))</code> - This line deletes the 5th column. The Reporting Period Total is not useful within the “Tidyverse” and is therefore removed.</li>
+<li><code>gather(Date, Usage, -c(1:4))</code> - The <code>gather</code> function is the primary way of moving data from a “wide” format into a tidy “long” format. This step keeps the data in columns 1-4 by collapses all the other columns in key-value pairs. This function create new variables for the key and value; for COUNTER-compliant reports, the key is the “Date” variable and the value is the “Usage” variable.</li>
+<li><code>mutate(Date = as.yearmon(Date, &quot;%b-%Y&quot;))</code> The <code>mutate</code> function adds a new varible from existing variables; here we update the “Date” variable by converting that data from a simple character string to the Year-Mon data type.</li>
+<li><code>mutate(Usage = as.numeric(Usage))</code> - Similarly, this function converts the Usage data from a character to numeric.</li>
+<li><code>rename(&quot;User_Activity&quot; = &quot;User Activity&quot;)</code> - Lastly, this function renames the “User Activity” column to avoid the space in the column name; this is probably optional but made life easier while working with the data.</li>
 </ol>
 </div>
 <div id="import-the-data-from-the-files" class="section level4">
 <h4>Import the Data from the Files</h4>
+<p>The function above transforms a dataframe within R; these functions load the data from a specific file and then apply the <code>tidy.DB1reports</code> function defined above.</p>
 <pre class="r"><code># This function imports data from CSV files and makes that data tidy.
 csv.importer &lt;- function(file) {
   file %&gt;%
@@ -101,12 +421,11 @@ excel.importer &lt;- function(file) {
     read_excel(skip=7, col_names = TRUE) %&gt;%
     tidy.DB1reports()
 }</code></pre>
-<p>These functions accept a single file as an parameter and then import that data by reading the file - skipping the first 7 lines per Counter standards - and then tidying the data using the function defined above. It is somewhat elegant to have two functions that do the same thing but keep the two function separate improves the readability of the code and is effective, conceptually simple, and easily extendable.</p>
+<p>These functions accept a single file as a parameter and import that data by calling the approriate reading function. Both processes skip the first 7 lines because those lines do not contain relevant information for this analysis and then tidy the data using the function defined above. It is somewhat inelegant to have two functions that do essentially the same thing but keeping the two function separate improves the readability of the code and is effective, conceptually simple, and easily extendable. A generalized import function would also be an improvement.</p>
 </div>
-</div>
-<div id="loading-and-tidying" class="section level3">
-<h3>Loading and Tidying</h3>
-<p>This phase of the project now has functions that can load a file and “tidy” the data; we now need a function that can apply these functions to all the files in a given folder.</p>
+<div id="loading-and-tidying" class="section level4">
+<h4>Loading and Tidying</h4>
+<p>This phase of the project now has functions that can load a file and tidy the data; we now need a function that can apply these functions to all the files in a given folder.</p>
 <pre class="r"><code># These functions load DB1 reports from a given folder.
 load.DB1.csv &lt;- function(path) { 
   csv.files &lt;- dir(path, pattern = &quot;*.(CSV|csv)&quot;, full.names = TRUE)
@@ -119,18 +438,19 @@ load.DB1.excel &lt;- function(path) {
   tables &lt;- lapply(excel.files, excel.importer)
   do.call(rbind, tables)
 }</code></pre>
-<p>These functions accept a path to a folder as a parameter and then create a list of file names for files that match a particular pattern - CSV files and XL* files respectively. The second line applies the appropriate import function to the list of files. Lastly, the <code>do.call(rbind, tables)</code> line binds together these tables by row.</p>
+<p>These functions accept a path to a folder as a parameter and then create a list of file names for files that match a particular pattern. The second line applies the appropriate import function to the list of files. Lastly, the <code>do.call(rbind, tables)</code> line binds together these tables by row.</p>
+</div>
 <div id="the-tidy-dataframe" class="section level4">
-<h4>The Tidy Dataframe!</h4>
-<p>After defining the last functions, these functions can import data from every CSV or Excel file in a given folder, tidy that data by moving from the Counter standard to a tidy dataframe, and finally combine that data into one single dataframe.</p>
-<p>These steps create two separate dataframes call <code>DB1.data.csv</code> and <code>DB1.data.excel</code> that contain the data from the respective file formats. The final line combines the data into in a single dataframe called DB1. The <code>unique</code> operation deletes any duplicate observations that may be present in the original usage reports. These duplicate observations would be caused by counter reports with overlapping data ranges.</p>
+<h4>The Tidy Dataframe</h4>
+<p>At last, we have the functions needed to import data from every CSV and Excel file in a specified folder and create a single tidy dataframe in R.</p>
+<p>The first two steps create two separate dataframes call <code>DB1.data.csv</code> and <code>DB1.data.excel</code> that contain the data from the respective file formats. The final line combines the data into in a single dataframe called DB1. The <code>unique</code> operation deletes any duplicate observations that may be present in the original usage reports.</p>
 </div>
 </div>
 <div id="transform-visualize-and-model" class="section level3">
 <h3>Transform, Visualize, and Model</h3>
-<p>After importing and tidying the usage data into R, the next step was to transform, visualize and model this data. Right now, this project performs basic transformations such as filtering, summarizing, and graphing the data. However, given the tidy structure of the data and the powerful tools that R provides for data transformation, there is an opportunity to build transformations that allow for new insights or create graphics that follow best practices.</p>
-<p>Like the import and tidy process, this project uses a functional approach to handle transformations and visualizations. The majority of these functions perform transformations on the tidy dataframe created earlier without changing or updating that dataframe. Rather than exhaustively survey all the transformations, this paper will highlight a single function that hopefully will demonstrate the basic structure of this part of the process, the power and opportunities to visualize and transform data, and the relative ease of writing functions in R.</p>
-<p>Like the other steps, I’ve adopted a functional approach to handle these transformations. All of the functions described here perform transformations on the same dataframe - the database usage statistics in the tidy format - without ever changing or updating that dataframe. Here is the function:</p>
+<p>After importing and tidying the usage data into R, the next step was to transform, visualize, and model this data. Right now, this project performs basic transformations such as filtering, summarizing, and graphing the data. However, given the tidy structure of the data and the powerful tools that R provides for data transformation, there is an opportunity to build functions that radically transformation the data and that allow for new insights. Additionally, given the shared data structures and tools, there are opportunites to share these transformation and visualizations freely and create new sets of best practices</p>
+<p>Like the import and tidy process, this project uses a functional approach to handle transformations and visualizations. The majority of these functions perform transformations on the tidy dataframe created earlier without changing or updating that original dataframe. Rather than exhaustively surveying all possible transformations, this paper will highlight a single function that will demonstrate the basic structure of this part of the process, the power and opportunities to visualize and transform data, and the relative ease of writing functions in R.</p>
+<p>This function transforms usage data by isolating data for a single database over a specified period of time, summarizing that data based on the academic calendar, and creating a bar graph of that data.</p>
 <pre class="r"><code># Graphs database usage based on academic term.
 usage.graph.database.acad.term &lt;- function(DatabaseName,
                                            StartYear,
@@ -159,8 +479,7 @@ usage.graph.database.acad.term &lt;- function(DatabaseName,
     xlab(&quot;Academic Term&quot;) +
     ylab(&quot;Usage&quot;)
 }</code></pre>
-<p>This function is called <code>usage.graph.database.acad.term</code> and it filters the original dataframe based on parameters supplied by the user, mutates and groups the observations based on academic term, and then returns a graph of the data. Looking at each line in detail:</p>
-<p>This function accepts four parameters - database name, start year, end year, and action - and applies these parameters as filters to the tidy dataframe. These filters return only observations matching the parameters.</p>
+<p>This function accepts four parameters - database name, start year, end year, and action - and applies these parameters as filters to the tidy dataframe. These filters return only observations matching the parameters. The action parameter is optional and defaults to all actions through a variable defined earlier.</p>
 <p>The <code>mutate</code> function creates new variables from existing variables. In this case, the <code>mutate</code> function creates three new variables from the existing date information: Year, Month, and Academic Term. Strictly speaking it was not necessary to create a new variable for month - the Academic Term could be derived directly from the date - but it has been included in the hopes that it makes the code more accessible. The <code>mutate</code> function that creates the Academic Term variable uses the <code>derivedFactor</code> from the Mosaic package.</p>
 <p>Thus far, the function has filtered out unwanted observations and created three new variables from the date field. The next steps group the data and then summarize the usage data by summing based on academic term.</p>
 <p>The final section, beginning with the call to the <code>ggplot</code> function, plots the now summarized data on a graph. This function comes from the ggplot2 package and is a core member of the Tidyverse. ggplot is able to create publication quality graphics from a relatively simple set of options that are infinitely customizable.</p>
@@ -183,5 +502,8 @@ usage.graph.database.acad.term &lt;- function(DatabaseName,
 <hr />
 <ol>
 <li id="fn1"><p><a href="http://r4ds.had.co.nz/introduction.html" class="uri">http://r4ds.had.co.nz/introduction.html</a><a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p><a href="http://r4ds.had.co.nz/pipes.html" class="uri">http://r4ds.had.co.nz/pipes.html</a><a href="#fnref2">↩</a></p></li>
+<li id="fn3"><p><a href="http://r4ds.had.co.nz/tidy-data.html" class="uri">http://r4ds.had.co.nz/tidy-data.html</a><a href="#fnref3">↩</a></p></li>
+<li id="fn4"><p><a href="https://www.projectcounter.org/code-of-practice-sections/usage-reports" class="uri">https://www.projectcounter.org/code-of-practice-sections/usage-reports</a><a href="#fnref4">↩</a></p></li>
 </ol>
 </div>
