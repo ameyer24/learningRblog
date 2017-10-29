@@ -17,21 +17,22 @@ With library budgets shrinking and the cost of online resources growing, many li
 ### R and the Tidyverse
 R is an open source programming language freely available under the GNU General Public License. R excels in statistical computing and is growing in popularity across many disciplines. R enjoys a large and active user community as well as a number of packages that extend the basic functions of R. The growing popularity of R, the strong and active user community, the ability to do reproducible and rigorous data analysis, and the open nature of R make this an excellent option for many library applications. Furthermore, developing staff expertise in R may  position the library to take on additional roles in data management and create new connections on campus
 
-The Tidyverse is set of R packages that “share a common philosophy of data and R programming and are designed to work together naturally.” ^[http://r4ds.had.co.nz/introduction.html] The Tidyverse is a great place to begin learning R because these packages are widely adopted and relatively intuitive. There is also an abundance of high quality documentation that is freely available online.
+The Tidyverse is set of R packages that “share a common philosophy of data and R programming and are designed to work together naturally.” ^[Grolemund, Garrett, and Hadley Wickham. "R for Data Science". This title is available in print or online: http://r4ds.had.co.nz/introduction.html] The Tidyverse is a great place to begin learning R because these packages are widely adopted and relatively intuitive. There is also an abundance of high quality documentation that is freely available online.
 
 ### Counter Reports
 COUNTER is a non-profit organization that provides libraries, publishers, and vendors a Code of Practice and set of definitions that facilitates the standard and consistent way to look at electronic resource usage. The project described in this paper focused on using the Database 1 reports generated under the fourth revision of Counter. However, the general approach outlined here could easily be extended to include other report types and/or reports from other revisions of the counter.
 
 ## Project Overview and General Overview
-This project approaches data science following the model proposed by Hadley Wickham in R for Data Science. The code is divided and structured into three discrete stages:
+This project approaches data science following the model proposed by Garrett Grolemund and Hadley Wickham in "R for Data Science". The code is divided and structured into three discrete stages:
 
 1. Import and Tidy
 2. Transform, Visualize, and Model
 3. Communicate
 
 ![](http://r4ds.had.co.nz/diagrams/data-science.png)
+Image from the book "R for Data Science" by Garrett Grolemund and Hadley Wickham and used under the Creative Commons license ^[Grolemund and Wickham. "R for Data Science" - http://r4ds.had.co.nz/introduction.html. This approach is also discussed in a lecture Hadley Wichham gave at Reed College entitled “Data Science with R.” https://www.youtube.com/watch?v=K-ss_ag2k9E.]
 
-Following another tenet of the Tidyverse, this project has adopted a functional approach to R. This approach limits redundant code and makes the meaning of the code more transparent. In terms of style, the code is written for clarity and simplicity; it is not written to optimize performance. The hope is the the variable and function names as well as comments allow  others to easily use and adapt this code to their local institutional needs. Lastly, this project makes extensive use of the pipe function in R. As a core member of the Tidyverse, this function makes R code more readable and beautiful by combining complex operations without requiring nested functions. The book "R for Data Science" offers a very clear explanation of the pipe function.^[http://r4ds.had.co.nz/pipes.html]
+Following another tenet of the Tidyverse, this project has adopted a functional approach to R. This approach limits redundant code and makes the meaning of the code more transparent. In terms of style, the code is written for clarity and simplicity; it is not written to optimize performance. The hope is the the variable and function names as well as comments allow  others to easily use and adapt this code to their local institutional needs. Lastly, this project makes extensive use of the pipe function in R. As a core member of the Tidyverse, this function makes R code more readable and beautiful by combining complex operations without requiring nested functions. The book "R for Data Science" offers a very clear explanation of the pipe function.^[Grolemund and Wickham. "R for Data Science" - http://r4ds.had.co.nz/pipes.html. The Vignette for the Magrittr package also provides a helpful guide: https://cran.r-project.org/web/packages/magrittr/vignettes/magrittr.html ]
 
 ### Tidy Data
 Before moving on, a note about terminology. In the context of the Tidyverse and throughout this paper, the word “tidy” carries a specific and technical definition. The goal of tidy data is to create an underlying structure that makes various types of transformation easier. Hadley Wickham offers this definition of tidy data:
@@ -42,7 +43,7 @@ Before moving on, a note about terminology. In the context of the Tidyverse and 
 2. Each observation forms a row.
 3. Each type of observational unit forms a table.
 
-Messy data is any other arrangement of the data."^[http://r4ds.had.co.nz/tidy-data.html]
+Messy data is any other arrangement of the data."^[Grolemund and Wickham. "R for Data Science" - http://r4ds.had.co.nz/tidy-data.html. For a more detailed treatment, see: Hadley Wickham "Tidy data." The Journal of Statistical Software, vol. 59, 2014 - https://www.jstatsoft.org/article/view/v059i10]
 
 According to this definition, COUNTER-compliant reports, although standardized, are messy because the structure of the data - the column and row arrangement - does not match correspond with the observations and variables. The process of tidying data begins by identifying the variables. For COUNTER-compliant database report 1, the variables are:
 
@@ -53,9 +54,10 @@ According to this definition, COUNTER-compliant reports, although standardized, 
 * Date (expressed as Month-Year)
 * Usage
 
-This can be conveyed visually using the sample data provided by COUNTER.^[https://www.projectcounter.org/code-of-practice-sections/usage-reports] In this example, variables are circled in red and the observations are noted in the green box.
+Using the the sample report provided by Project COUNTER, we can see that while the reports are standardized the data is messy because each line contains many observations. This can be conveyed visually by circling the variables in red and noting the observations with green.
 
-(screenshot)
+![](/img/counterreport2.png)
+This image is sample of the Database Report 1 from the Project COUNTER website. ^[Usage Reports - Example usage reports https://www.projectcounter.org/code-of-practice-sections/usage-reports/]
 
 Skipping the first 7 lines of the file, this data would look like this:
 ```{r echo=FALSE}

@@ -27,17 +27,14 @@ slug: using-r-and-the-tidyverse-to-generate-library-usage-reports
 </div>
 <div id="project-overview-and-general-overview" class="section level2">
 <h2>Project Overview and General Overview</h2>
-<p>This project approaches data science following the model proposed by Hadley Wickham in R for Data Science. The code is divided and structured into three discrete stages:</p>
+<p>This project approaches data science following the model proposed by Garrett Grolemund and Hadley Wickham in “R for Data Science”. The code is divided and structured into three discrete stages:</p>
 <ol style="list-style-type: decimal">
 <li>Import and Tidy</li>
 <li>Transform, Visualize, and Model</li>
 <li>Communicate</li>
 </ol>
-<div class="figure">
-<img src="http://r4ds.had.co.nz/diagrams/data-science.png" />
-
-</div>
-<p>Following another tenet of the Tidyverse, this project has adopted a functional approach to R. This approach limits redundant code and makes the meaning of the code more transparent. In terms of style, the code is written for clarity and simplicity; it is not written to optimize performance. The hope is the the variable and function names as well as comments allow others to easily use and adapt this code to their local institutional needs. Lastly, this project makes extensive use of the pipe function in R. As a core member of the Tidyverse, this function makes R code more readable and beautiful by combining complex operations without requiring nested functions. The book “R for Data Science” offers a very clear explanation of the pipe function.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a></p>
+<p><img src="http://r4ds.had.co.nz/diagrams/data-science.png" /> Image from the book “R for Data Science” by Garrett Grolemund and Hadley Wickham and used under the Creative Commons license <a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a></p>
+<p>Following another tenet of the Tidyverse, this project has adopted a functional approach to R. This approach limits redundant code and makes the meaning of the code more transparent. In terms of style, the code is written for clarity and simplicity; it is not written to optimize performance. The hope is the the variable and function names as well as comments allow others to easily use and adapt this code to their local institutional needs. Lastly, this project makes extensive use of the pipe function in R. As a core member of the Tidyverse, this function makes R code more readable and beautiful by combining complex operations without requiring nested functions. The book “R for Data Science” offers a very clear explanation of the pipe function.<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a></p>
 <div id="tidy-data" class="section level3">
 <h3>Tidy Data</h3>
 <p>Before moving on, a note about terminology. In the context of the Tidyverse and throughout this paper, the word “tidy” carries a specific and technical definition. The goal of tidy data is to create an underlying structure that makes various types of transformation easier. Hadley Wickham offers this definition of tidy data:</p>
@@ -47,7 +44,7 @@ slug: using-r-and-the-tidyverse-to-generate-library-usage-reports
 <li>Each observation forms a row.</li>
 <li>Each type of observational unit forms a table.</li>
 </ol>
-<p>Messy data is any other arrangement of the data.“<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a></p>
+<p>Messy data is any other arrangement of the data.“<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a></p>
 <p>According to this definition, COUNTER-compliant reports, although standardized, are messy because the structure of the data - the column and row arrangement - does not match correspond with the observations and variables. The process of tidying data begins by identifying the variables. For COUNTER-compliant database report 1, the variables are:</p>
 <ul>
 <li>Database</li>
@@ -57,8 +54,8 @@ slug: using-r-and-the-tidyverse-to-generate-library-usage-reports
 <li>Date (expressed as Month-Year)</li>
 <li>Usage</li>
 </ul>
-<p>This can be conveyed visually using the sample data provided by COUNTER.<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a> In this example, variables are circled in red and the observations are noted in the green box.</p>
-<p>(screenshot)</p>
+<p>Using the the sample report provided by Project COUNTER, we can see that while the reports are standardized the data is messy because each line contains many observations. This can be conveyed visually by circling the variables in red and noting the observations with green.</p>
+<p><img src="/img/counterreport2.png" /> This image is sample of the Database Report 1 from the Project COUNTER website. <a href="#fn5" class="footnoteRef" id="fnref5"><sup>5</sup></a></p>
 <p>Skipping the first 7 lines of the file, this data would look like this:</p>
 <table>
 <thead>
@@ -500,9 +497,10 @@ usage.graph.database.acad.term &lt;- function(DatabaseName,
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p><a href="http://r4ds.had.co.nz/introduction.html" class="uri">http://r4ds.had.co.nz/introduction.html</a><a href="#fnref1">↩</a></p></li>
-<li id="fn2"><p><a href="http://r4ds.had.co.nz/pipes.html" class="uri">http://r4ds.had.co.nz/pipes.html</a><a href="#fnref2">↩</a></p></li>
-<li id="fn3"><p><a href="http://r4ds.had.co.nz/tidy-data.html" class="uri">http://r4ds.had.co.nz/tidy-data.html</a><a href="#fnref3">↩</a></p></li>
-<li id="fn4"><p><a href="https://www.projectcounter.org/code-of-practice-sections/usage-reports" class="uri">https://www.projectcounter.org/code-of-practice-sections/usage-reports</a><a href="#fnref4">↩</a></p></li>
+<li id="fn1"><p>Grolemund, Garrett, and Hadley Wickham. “R for Data Science”. This title is available in print or online: <a href="http://r4ds.had.co.nz/introduction.html" class="uri">http://r4ds.had.co.nz/introduction.html</a><a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p>Grolemund and Wickham. “R for Data Science” - <a href="http://r4ds.had.co.nz/introduction.html" class="uri">http://r4ds.had.co.nz/introduction.html</a>. This approach is also discussed in a lecture Hadley Wichham gave at Reed College entitled “Data Science with R.” <a href="https://www.youtube.com/watch?v=K-ss_ag2k9E" class="uri">https://www.youtube.com/watch?v=K-ss_ag2k9E</a>.<a href="#fnref2">↩</a></p></li>
+<li id="fn3"><p>Grolemund and Wickham. “R for Data Science” - <a href="http://r4ds.had.co.nz/pipes.html" class="uri">http://r4ds.had.co.nz/pipes.html</a>. The Vignette for the Magrittr package also provides a helpful guide: <a href="https://cran.r-project.org/web/packages/magrittr/vignettes/magrittr.html" class="uri">https://cran.r-project.org/web/packages/magrittr/vignettes/magrittr.html</a><a href="#fnref3">↩</a></p></li>
+<li id="fn4"><p>Grolemund and Wickham. “R for Data Science” - <a href="http://r4ds.had.co.nz/tidy-data.html" class="uri">http://r4ds.had.co.nz/tidy-data.html</a>. For a more detailed treatment, see: Hadley Wickham “Tidy data.” The Journal of Statistical Software, vol. 59, 2014 - <a href="https://www.jstatsoft.org/article/view/v059i10" class="uri">https://www.jstatsoft.org/article/view/v059i10</a><a href="#fnref4">↩</a></p></li>
+<li id="fn5"><p>Usage Reports - Example usage reports <a href="https://www.projectcounter.org/code-of-practice-sections/usage-reports/" class="uri">https://www.projectcounter.org/code-of-practice-sections/usage-reports/</a><a href="#fnref5">↩</a></p></li>
 </ol>
 </div>
